@@ -40,27 +40,60 @@ isbVarsInTable = function(bq, tabletag = "Somatic_Mutation_calls") {
   bq %>% tbl(tabletag) %>% tbl_vars()
 }
 
-.mutq <- function(studytag = "BRCA", limit=NULL) {
-  ans = sub( "%%STUDYTAG%%", paste0("'", studytag, "'"), "SELECT COUNT (DISTINCT(pb)) AS sampleN, hugosymbols AS gene FROM ( SELECT ParticipantBarcode AS pb, Hugo_Symbol AS hugosymbols FROM [isb-cgc:tcga_201510_alpha.Somatic_Mutation_calls] WHERE Study = %%STUDYTAG%% GROUP BY hugosymbols, pb) GROUP BY gene ORDER BY sampleN DESC")
+# prepare query for data frame with table of mutation counts per gene symbol
+# use query_exec( querystring, projectstring ) to retrieve table
+.mutq <- function(studytag = "BRCA", limit=NULL, db="isb-cgc:tcga_201607_beta") {
+  ans = sprintf("SELECT COUNT (DISTINCT(pb)) AS sampleN, hugosymbols AS gene FROM ( SELECT ParticipantBarcode AS pb, Hugo_Symbol AS hugosymbols FROM [%s.Somatic_Mutation_calls] WHERE Study = '%s' GROUP BY hugosymbols, pb) GROUP BY gene ORDER BY sampleN DESC", db, studytag)
   if (!is.null(limit)) ans = paste0(ans, paste0(" LIMIT ", limit))
   ans
 }
 
-.genesWmutInStudyDFq = function(studytag="OV", limit=NULL) {
- # return data frame with columns sampleN, gene
- .mutq(studytag, limit)
+#' obtain data frame with counts of mutation per gene symbol for selected tumor type
+#' @param tumor character(1) defaults to 'BRCA'
+#' @param limit numeric(1) defaults to NULL, appended as limit to number of records returned if non-null
+#' @param db character(1) BigQuery database name
+#' @param project character(1) project code
+#' @note This function returns overall mutation count, and many individuals have multiple
+#' mutations recorded per gene.
+#' @examples
+#' tt = TcgaMutCounts("BRCA", project="cgc-05-0009") # substitute your project name
+#' head(tt)
+#' @export
+TcgaMutCounts = function(tumor, limit=NULL, db="isb-cgc:tcga_201607_beta", project) {
+ qq = .mutq(studytag = tumor, limit=limit, db=db)
+ query_exec(qq, project=project)
 }
 
-.participantBarcodesInTableInStudyq = function(tabletag = "Somatic_Mutation_calls", studytag="OV", limit=NULL) {
-  sub1 = sub( "%%STUDYTAG%%", paste0("'", studytag, "'"), "SELECT ParticipantBarcode FROM [isb-cgc:tcga_201510_alpha.%%TABLETAG%%] WHERE Study = %%STUDYTAG%% ")
+.genesWmutInStudyDFq = function(studytag="OV", limit=NULL, db="isb-cgc:tcga_201607_beta") {
+ # return data frame with columns sampleN, gene
+ .mutq(studytag, limit, db=db)
+}
+
+.participantBarcodesInTableInStudyq = function(tabletag = "Somatic_Mutation_calls", studytag="OV", limit=NULL,
+  db="isb-cgc:tcga_201607_beta") {
+#  sub1 = sub( "%%STUDYTAG%%", paste0("'", studytag, "'"), "SELECT ParticipantBarcode FROM [isb-cgc:tcga_201510_alpha.%%TABLETAG%%] WHERE Study = %%STUDYTAG%% ")
+  sub1 = sprintf("SELECT UNIQUE( ParticipantBarcode ) FROM [%s.%s] WHERE Study = '%s' ", db, tabletag, studytag)
   ans = sub("%%TABLETAG%%", tabletag, sub1 )
   if (!is.null(limit)) ans = paste0(ans, paste0(" LIMIT ", limit))
   ans
 }
+#' Give count of individuals with a mutation recorded for selected tumor
+#' @param tumor character(1) defaults to 'BRCA'
+#' @param limit numeric(1) defaults to NULL, appended as limit to number of records returned if non-null
+#' @param db character(1) BigQuery database name
+#' @param project character(1) project code
+#' @examples
+#' TcgaNIndWithAnyMut(project="cgc-05-0009")
+#' @export
+TcgaNIndWithAnyMut = function(tumor="BRCA", limit=NULL, db="isb-cgc:tcga_201607_beta", project) {
+ qq = .participantBarcodesInTableInStudyq(tabletag = "Somatic_Mutation_calls",
+           studytag = tumor, limit=limit, db=db)
+ nrow(query_exec(qq, project=project))
+}
 
 
-genesWmutInStudyDF = function(project, studytag="OV", limit=NULL)
-  query_exec( .genesWmutInStudyDFq(studytag="OV", limit=NULL), project = project )
+genesWmutInStudyDF = function(project, studytag="OV", limit=NULL, db="isb-cgc:tcga_201607_beta")
+  query_exec( .genesWmutInStudyDFq(studytag="OV", limit=NULL, db=db), project = project )
 
 mutsInGeneInStudyDF = function(bq, gene = "KRAS", studytag = "LUAD") {
   select = dplyr::select
@@ -180,16 +213,20 @@ oncoPrintISB = function(bq) {
      fluidRow(
       selectInput("study", "Tumor", choices=studies, selected="LUAD", selectize=TRUE),
       selectInput("geneset", "Gene set", choices=names(gnsets), selected=names(gnsets)[1], selectize=TRUE)
-      )
+      ), width=3
      ), # end sidebar
     mainPanel(
      tabsetPanel(
-      tabPanel("oncoPrint", plotOutput("onco")),
+      tabPanel("oncoPrint", textOutput("nind"), plotOutput("onco")),
       tabPanel("genes", dataTableOutput("setelem"))
       )
     )
    )
   server = function(input, output) {
+   output$nind = renderText({
+      nind = TcgaNIndWithAnyMut( input$study, project = bq@billing )
+      sprintf("Using data on %d individuals with any mutation for %s", nind, input$study)
+      })
    output$onco = renderPlot({
       curstudy = input$study
       curset = gnsets[[input$geneset]]

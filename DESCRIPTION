@@ -2,7 +2,7 @@ Package: oncoNuggets
 Title: Bioconductor components for general cancer genomics
 Description: Provide a central interface to various tools for
 	genome-scale analysis of cancer studies.  
-Version: 0.0.0
+Version: 0.0.1
 Author: Vince Carey
 Suggests: knitr, dbplyr, bigrquery, shiny, magrittr
 Imports: shiny, ComplexHeatmap
