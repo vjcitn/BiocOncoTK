@@ -1,0 +1,76 @@
+---
+title: "BiocOncoTK: a set of cancer-oriented software components for Bioconductor"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{BiocOncoTK -- cancer oriented components for Bioconductor}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::pdf_document:
+    toc: yes
+    number_sections: yes
+  BiocStyle::html_document:
+    highlight: pygments
+    number_sections: yes
+    theme: united
+    toc: yes
+---
+
+```{r setup,echo=FALSE,results="hide"}
+suppressPackageStartupMessages({
+suppressMessages({
+library(BiocOncoTK)
+library(BiocStyle)
+})
+})
+```
+
+# Overview
+
+This package provides a unified approach to programming with Bioconductor
+components to address problems in cancer genomics.  Central concerns are:
+
+- __Ontology applications__ that systematize the conceptual structure of
+cancer biology.  There are particular concerns with structured vocabularies for
+    - general human anatomy 
+    - experimental cell lines
+    - cancer therapeutics
+    - genome and epigenome elements and alterations related to cancer
+- __Communications infrastructure__ to support extraction and analysis of well-structured, self-describing
+data from public archives and portals.  Key resource centers of interest include
+    - [TCGA](https://cancergenome.nih.gov/), with curated representations through
+        - the [ISB Cancer Genomics Cloud project](http://cgc.systemsbiology.net/)
+        - Bioconductor's [curatedTCGAData](https://bioconductor.org/packages/curatedTCGAData/) interface
+    - [cBioPortal](http://www.cbioportal.org/); our main concern is to simplify usage of the RESTful API with R
+    - [Ivy Glioblastoma Atlas Project](http://glioblastoma.alleninstitute.org/)
+    - [TCIA](http://www.cancerimagingarchive.net/), with radiology and pathology
+components available through [ISB/BigQuery](http://isb-cancer-genomics-cloud.readthedocs.io/en/latest/sections/TCGA-images.html)
+    - [TCRN](https://cancerdatanetwork.org/): the TIES (Text Information Extraction System) Cancer Research Network -- we'll have to learn more about [JWT with httr](https://cran.r-project.org/web/packages/jose/vignettes/jwt.html) before progressing with this
+    - [CONQUER](http://imlspenticton.uzh.ch:3838/conquer/), an archive of uniformly processed __single-cell RNA-seq__ datasets, a number of which related to cancer.  We have 'curated' CONQUER's version of the GBM
+single cell study of [Patel et al. 2014](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4123637/)
+in the [patelGBMSC package](https://github.com/vjcitn/patelGBMSC), with the large data component
+in an AWS S3 bucket.
+- __Remote analysis support__ to "move the computation to the data".  Bridging [Google Cloud Datalab](https://cloud.google.com/datalab/) to the ISB TCGA and CCLE images is a first target.
+- __Social coding practice__: at present, users and developers should use the [issue tracker](https://github.com/vjcitn/BiocOncoTK/issues)
+at the [BiocOncoTK github repository](https://github.com/vjcitn/BiocOncoTK) to comment, critique, and propose new approaches.
+
+# Ontology
+
+## Oncotree
+
+The NCI Thesaurus project distributes an OBO representation of oncotree.  We
+can use this through the `r Biocpkg("ontoProc")` (devel branch only) and `r CRANpkg("ontologyPlot")`
+packages.  Code for visualizing the location of 'Glioblastoma' in the context of its 'siblings'
+in the ontology follows.
+
+```{r lkgbm,fig=TRUE,message=FALSE}
+library(ontoProc)
+library(ontologyPlot)
+oto = getOncotreeOnto()
+glioTag = names(grep("Glioblastoma$", oto$name, value=TRUE))
+st = siblings_TAG(glioTag, oto, justSibs=FALSE)
+onto_plot(oto, st@ontoTags, fontsize=50)
+```
+
+
