@@ -1,4 +1,4 @@
-Package: oncoNuggets
+Package: BiocOncoTK
 Title: Bioconductor components for general cancer genomics
 Description: Provide a central interface to various tools for
 	genome-scale analysis of cancer studies.  
