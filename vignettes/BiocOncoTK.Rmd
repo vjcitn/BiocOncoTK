@@ -22,6 +22,9 @@ suppressPackageStartupMessages({
 suppressMessages({
 library(BiocOncoTK)
 library(BiocStyle)
+library(dplyr)
+library(DBI)
+library(magrittr)
 })
 })
 ```
@@ -42,6 +45,7 @@ data from public archives and portals.  Key resource centers of interest include
     - [TCGA](https://cancergenome.nih.gov/), with curated representations through
         - the [ISB Cancer Genomics Cloud project](http://cgc.systemsbiology.net/)
         - Bioconductor's [curatedTCGAData](https://bioconductor.org/packages/curatedTCGAData/) interface
+    - [TARGET](https://ocg.cancer.gov/programs/target) through ISB-CGC
     - [cBioPortal](http://www.cbioportal.org/); our main concern is to simplify usage of the RESTful API with R
     - [Ivy Glioblastoma Atlas Project](http://glioblastoma.alleninstitute.org/)
     - [TCIA](http://www.cancerimagingarchive.net/), with radiology and pathology
@@ -73,4 +77,33 @@ st = siblings_TAG(glioTag, oto, justSibs=FALSE)
 onto_plot(oto, st@ontoTags, fontsize=50)
 ```
 
+# Resource interfaces
 
+## TARGET
+
+We assume that an ISB-CGC Google BigQuery billing number
+is assigned to the environment variable `CGC_BILLING`.
+
+First we list the tables available and have a look at the
+RNA-seq table.
+```{r lktarg, message=FALSE}
+billco = Sys.getenv("CGC_BILLING")
+if (nchar(billco)>0) {
+  con = DBI::dbConnect(bigrquery::dbi_driver(), project="isb-cgc",
+     dataset="TARGET_hg38_data_v0", billing=billco)
+  DBI::dbListTables(con)
+  con %>% tbl("RNAseq_Gene_Expression") %>% glimpse()
+  }
+```
+
+Now let's see what tumor types are available.
+```{r lklk, message=FALSE, warning=FALSE}
+if (nchar(billco)>0) {
+  con %>% tbl("RNAseq_Gene_Expression") %>% 
+      select(project_short_name) %>%
+      group_by(project_short_name) %>%
+      summarise(n=n())
+}
+```
+NBL is neuroblastoma, RT is rhabdoid tumor, WT is
+Wilms' tumor.
