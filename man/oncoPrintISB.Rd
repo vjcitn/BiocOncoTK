@@ -16,3 +16,13 @@ interactive interface to ComplexHeatmap oncoPrint with inputs from ISB Cancer Ge
 This function will start a shiny app and will generate queries to
 Google BigQuery tables representing TCGA.
 }
+\examples{
+if (interactive()) {
+ bcode = Sys.getenv("CGC_BILLING")
+ if (nchar(bcode)>0) {
+  con <- DBI::dbConnect(bigrquery::dbi_driver(), project = "isb-cgc", 
+       dataset = "tcga_201607_beta", billing = bcode)
+  oncoPrintISB(con)
+ }
+}
+}

@@ -23,6 +23,9 @@ This function returns overall mutation count, and many individuals have multiple
 mutations recorded per gene.
 }
 \examples{
+if (interactive()) {
+requireNamespace("bigrquery")
 tt = TcgaMutCounts("BRCA", project="cgc-05-0009") # substitute your project name
 head(tt)
+}  # need authentication
 }

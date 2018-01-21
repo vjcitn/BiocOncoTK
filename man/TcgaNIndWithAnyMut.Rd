@@ -20,5 +20,5 @@ TcgaNIndWithAnyMut(tumor = "BRCA", limit = NULL,
 Give count of individuals with a mutation recorded for selected tumor
 }
 \examples{
-TcgaNIndWithAnyMut(project="cgc-05-0009")
+if (interactive()) TcgaNIndWithAnyMut(project="cgc-05-0009")
 }

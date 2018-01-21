@@ -25,6 +25,7 @@ library(BiocStyle)
 library(dplyr)
 library(DBI)
 library(magrittr)
+library(pogos)
 })
 })
 ```
@@ -86,7 +87,7 @@ is assigned to the environment variable `CGC_BILLING`.
 
 First we list the tables available and have a look at the
 RNA-seq table.
-```{r lktarg, message=FALSE}
+```{r lktarg, message=FALSE,eval=FALSE}
 billco = Sys.getenv("CGC_BILLING")
 if (nchar(billco)>0) {
   con = DBI::dbConnect(bigrquery::dbi_driver(), project="isb-cgc",
@@ -95,9 +96,29 @@ if (nchar(billco)>0) {
   con %>% tbl("RNAseq_Gene_Expression") %>% glimpse()
   }
 ```
+```
+## Observations: NA
+## Variables: 16
+## $ project_short_name <chr> "TARGET-RT", "TARGET-RT", "TARGET-RT", "TARGE...
+## $ case_barcode       <chr> "TARGET-52-PARPFY", "TARGET-52-PARPFY", "TARG...
+## $ sample_barcode     <chr> "TARGET-52-PARPFY-11A", "TARGET-52-PARPFY-11A...
+## $ aliquot_barcode    <chr> "TARGET-52-PARPFY-11A-01R", "TARGET-52-PARPFY...
+## $ gene_name          <chr> "RIC8B", "ATOH7", "ZNF532", "XKR5", "RP11-33O...
+## $ gene_type          <chr> "protein_coding", "protein_coding", "protein_...
+## $ Ensembl_gene_id    <chr> "ENSG00000111785", "ENSG00000179774", "ENSG00...
+## $ Ensembl_gene_id_v  <chr> "ENSG00000111785.17", "ENSG00000179774.8", "E...
+## $ HTSeq__Counts      <int> 2396, 35, 5367, 17, 323, 1718, 1, 4, 3151, 25...
+## $ HTSeq__FPKM        <dbl> 3.212811104, 0.247184268, 4.693986615, 0.0353...
+## $ HTSeq__FPKM_UQ     <dbl> 7.790066e+04, 5.993448e+03, 1.138145e+05, 8.5...
+## $ case_gdc_id        <chr> "5cdd05ea-5285-50b7-971a-8bc005d01669", "5cdd...
+## $ sample_gdc_id      <chr> "7448bf2b-4ba0-5f98-ad0f-e87fa6619a43", "7448...
+## $ aliquot_gdc_id     <chr> "TARGET-52-PARPFY-11A-01R", "TARGET-52-PARPFY...
+## $ file_gdc_id        <chr> "f31fe296-402e-4e7d-b072-e4a6571a9c8a", "f31f...
+## $ platform           <chr> "Illumina", "Illumina", "Illumina", "Illumina...
+```
 
 Now let's see what tumor types are available.
-```{r lklk, message=FALSE, warning=FALSE}
+```{r lklk, message=FALSE, warning=FALSE,eval=FALSE}
 if (nchar(billco)>0) {
   con %>% tbl("RNAseq_Gene_Expression") %>% 
       select(project_short_name) %>%
@@ -105,5 +126,161 @@ if (nchar(billco)>0) {
       summarise(n=n())
 }
 ```
+```
+## # Source: lazy query [?? x 2]
+## # Database: BigQueryConnection
+##   project_short_name        n
+##   <chr>                 <int>
+## 1 TARGET-NBL          9495831
+## 2 TARGET-AML         11310321
+## 3 TARGET-RT            302415
+## 4 TARGET-WT           7983756
+```
+
 NBL is neuroblastoma, RT is rhabdoid tumor, WT is
 Wilms' tumor.
+
+## CCLE
+
+Figure 3a of Barretina et al 2012 shows that cell lines with
+NRAS mutations can be ordered according to a measure of
+PD-0325901 activity, and that this drug activity measure
+is correlated with expression of AHR.  We will acquire the
+mutation and expression data using BigQuery as provided by ISB.
+
+Here is a listing of all tables:
+```{r lkccle2, message=FALSE, eval=FALSE}
+billco = Sys.getenv("CGC_BILLING")
+if (nchar(billco)>0) {
+  con = DBI::dbConnect(bigrquery::dbi_driver(), project="isb-cgc",
+     dataset="ccle_201602_alpha", billing=billco)
+  DBI::dbListTables(con)
+}
+```
+```
+## [1] "AffyU133_RMA_expression" "Copy_Number_segments"   
+## [3] "DataFile_info"           "Mutation_calls"         
+## [5] "Sample_information"      "fastqc_metrics"
+```
+
+### Mutation data
+
+<!--
+ [1] "CCLE_bioclin_v0"     "GDC_metadata"        "GTEx_v7"            
+ [4] "QotM"                "TARGET_bioclin_v0"   "TARGET_hg38_data_v0"
+ [7] "TCGA_bioclin_v0"     "TCGA_hg19_data_v0"   "TCGA_hg38_data_v0"  
+[10] "Toil_recompute"      "ccle_201602_alpha"   "genome_reference"   
+
+# CCLE datasets
+[1] "AffyU133_RMA_expression" "Copy_Number_segments"   
+[3] "DataFile_info"           "Mutation_calls"         
+[5] "Sample_information"      "fastqc_metrics"         
+-->
+
+First we get an overview of the content:
+
+```{r lkmucc,eval=FALSE}
+muttab = con %>% tbl("Mutation_calls")
+length(muttab %>% colnames())
+muttab %>% select(Cell_line_primary_name, Hugo_Symbol, 
+   Variant_Classification, cDNA_Change)%>% glimpse()
+```
+```
+## [1] 53
+```
+
+Now let's filter by NRAS and get a feel for how many
+observations are returned per cell line.
+
+```{r lknras, warning=FALSE,eval=FALSE}
+nrastab = muttab %>% select(Variant_Classification, Hugo_Symbol, 
+    Cell_line_primary_name, CCLE_name) %>%
+     filter(Hugo_Symbol == "NRAS") %>% group_by(Hugo_Symbol) 
+nrastab %>% summarise(n=n())
+nrasdf = nrastab %>% as.data.frame()
+```
+
+We need to carve up the CCLE name to get the organ.
+```{r dospl,eval=FALSE}
+spl = function(x) {
+  z = strsplit(x, "_")
+  fir = vapply(z, function(x)x[1], character(1))
+  rest = vapply(z, function(x) paste(x[-1], collapse="_"), character(1))
+  list(fir, rest)
+}
+nrasdf$organ = spl(nrasdf$CCLE_name)[[2]]
+```
+```{r getmodnr,echo=FALSE}
+nrasdf = load_nrasdf()
+```{r illus}
+head(nrasdf)
+table(nrasdf$organ)
+prim_names = as.character(nrasdf$Cell_line_primary_name)
+```
+
+
+### Expression data
+
+Let's obtain the expression of AHR for these NRAS-mutated cell lines.
+
+```{r lkccleex, message=FALSE, warning=FALSE, eval=FALSE}
+ccexp = con %>% tbl("AffyU133_RMA_expression") 
+ccexp %>% glimpse()
+ccexp %>% select(Cell_line_primary_name, RMA_normalized_expression,
+    HGNC_gene_symbol) %>% filter(HGNC_gene_symbol == "AHR") %>% 
+    filter(Cell_line_primary_name %in% nrasdf$Cell_line_primary_name) %>%
+    as.data.frame() -> NRAS_AHR
+head(NRAS_AHR)
+```
+```{r domockahr,echo=FALSE}
+NRAS_AHR = load_NRAS_AHR()
+head(NRAS_AHR)
+```
+
+### Drug responsiveness data from CCLE, using pogos
+
+The pogos package (submitted, see github.com/vjcitn/pogos)
+includes software to query pharmacodb.pmgenomics.ca.
+We will use this to develop drug-response profiles
+for PD-0325901.
+
+```{r dopog,eval=FALSE}
+library(pogos)
+ccleNRAS = DRTraceSet(NRAS_AHR[,1], drug="PD-0325901")
+plot(ccleNRAS)
+```
+```{r dopogmock,echo=FALSE,results="hide",fig=TRUE}
+ccleNRAS = load_ccleNRAS()
+plot(ccleNRAS)
+```
+
+We'll define a responsiveness method, that takes a function f
+that is applied to the responses component of the dose-response
+profile.
+```{r drrr}
+responsiveness = function (x, f) 
+{
+    r = sapply(x@traces, function(x) f(x@DRProfiles[[1]]@responses))
+    data.frame(Cell_line_primary_name = x@cell_lines, resp = r, 
+        drug = x@drug, dataset = x@dataset)
+}
+```
+
+The activity area for a compound in this design is defined as
+```{r lkaa}
+AA = function(x) sum((pmax(0, x/100)))
+head(rr <- responsiveness(ccleNRAS, AA))
+summary(rr$resp)
+```
+This is based on the supplement to Barretina et al. 2012.  (There
+a slightly different formula in the addendum which uses notation that includes
+multiplying by a factor of i for
+dose index level i.)
+
+Let's merge the responsiveness data with the expression data for
+gene AHR.
+
+```{r mrg}
+rexp = merge(rr, NRAS_AHR)
+rexp[1:2,]
+```

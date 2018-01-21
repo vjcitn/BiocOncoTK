@@ -49,6 +49,7 @@ isbVarsInTable = function(bq, tabletag = "Somatic_Mutation_calls") {
 }
 
 #' obtain data frame with counts of mutation per gene symbol for selected tumor type
+#' @import bigrquery
 #' @param tumor character(1) defaults to 'BRCA'
 #' @param limit numeric(1) defaults to NULL, appended as limit to number of records returned if non-null
 #' @param db character(1) BigQuery database name
@@ -56,12 +57,16 @@ isbVarsInTable = function(bq, tabletag = "Somatic_Mutation_calls") {
 #' @note This function returns overall mutation count, and many individuals have multiple
 #' mutations recorded per gene.
 #' @examples
+#' if (interactive()) {
+#' requireNamespace("bigrquery")
 #' tt = TcgaMutCounts("BRCA", project="cgc-05-0009") # substitute your project name
 #' head(tt)
+#' }  # need authentication
 #' @export
 TcgaMutCounts = function(tumor, limit=NULL, db="isb-cgc:tcga_201607_beta", project) {
+ requireNamespace("bigrquery")
  qq = .mutq(studytag = tumor, limit=limit, db=db)
- query_exec(qq, project=project)
+ bigrquery::query_exec(qq, project=project)
 }
 
 .genesWmutInStudyDFq = function(studytag="OV", limit=NULL, db="isb-cgc:tcga_201607_beta") {
@@ -78,12 +83,13 @@ TcgaMutCounts = function(tumor, limit=NULL, db="isb-cgc:tcga_201607_beta", proje
   ans
 }
 #' Give count of individuals with a mutation recorded for selected tumor
+#' @importFrom bigrquery query_exec
 #' @param tumor character(1) defaults to 'BRCA'
 #' @param limit numeric(1) defaults to NULL, appended as limit to number of records returned if non-null
 #' @param db character(1) BigQuery database name
 #' @param project character(1) project code
 #' @examples
-#' TcgaNIndWithAnyMut(project="cgc-05-0009")
+#' if (interactive()) TcgaNIndWithAnyMut(project="cgc-05-0009")
 #' @export
 TcgaNIndWithAnyMut = function(tumor="BRCA", limit=NULL, db="isb-cgc:tcga_201607_beta", project) {
  qq = .participantBarcodesInTableInStudyq(tabletag = "Somatic_Mutation_calls",
@@ -196,9 +202,19 @@ geneVecToOPInputByStudy = function(bq, genevec, studytag="LUAD") {
 #' @import shiny
 #' @import ComplexHeatmap
 #' @import grid
+#' @importFrom methods is
 #' @param bq an instance of \code{\link[bigrquery]{BigQueryConnection-class}} authenticated for ISB Cancer Genomics Cloud access
 #' @note This function will start a shiny app and will generate queries to
 #' Google BigQuery tables representing TCGA.
+#' @examples
+#' if (interactive()) {
+#'  bcode = Sys.getenv("CGC_BILLING")
+#'  if (nchar(bcode)>0) {
+#'   con <- DBI::dbConnect(bigrquery::dbi_driver(), project = "isb-cgc", 
+#'        dataset = "tcga_201607_beta", billing = bcode)
+#'   oncoPrintISB(con)
+#'  }
+#' }
 #' @export
 oncoPrintISB = function(bq) {
   stopifnot(is(bq, "BigQueryConnection"))

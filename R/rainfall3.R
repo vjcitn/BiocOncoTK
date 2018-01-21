@@ -1,3 +1,7 @@
+#' @import ggplot2
+#' @import S4Vectors
+#' @import TxDb.Hsapiens.UCSC.hg19.knownGene
+#' @import TxDb.Hsapiens.UCSC.hg18.knownGene
 
 midpts = function(x) {
 # given n interval boundaries obtain n-1 midpts
@@ -6,12 +10,12 @@ c(x[1]/2, x[-length(x)] + diff(x)/2)
 
 chrbounds_basic = function(genome="hg18") {
  if (genome=="hg19") {
-    require(TxDb.Hsapiens.UCSC.hg19.knownGene)
-    info = seqinfo(TxDb.Hsapiens.UCSC.hg19.knownGene)[paste0("chr", c(1:22, "X", "Y")),]
+    requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")
+    info = seqinfo(TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene)[paste0("chr", c(1:22, "X", "Y")),]
     }
  else if (genome=="hg18") {
-    require(TxDb.Hsapiens.UCSC.hg18.knownGene)
-    info = seqinfo(TxDb.Hsapiens.UCSC.hg18.knownGene)[paste0("chr", c(1:22, "X", "Y")),]
+    requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")
+    info = seqinfo(TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene)[paste0("chr", c(1:22, "X", "Y")),]
     }
  cumsum(as.numeric(seqlengths(info)))
 }
@@ -44,12 +48,12 @@ subt = function(ref, a1, a2) {
      init$Chromosome = paste0("chr", init$Chromosome)
      init = init[ which(init$Subst %in% names(colmap)), ]
      if (init$NCBI_Build[1] == "36") {
-          require(TxDb.Hsapiens.UCSC.hg18.knownGene)
-          lenbase = TxDb.Hsapiens.UCSC.hg18.knownGene
+          requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")
+          lenbase = TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
           }
      else if (init$NCBI_Build[1] == "37") {
-          require(TxDb.Hsapiens.UCSC.hg19.knownGene)
-          lenbase = TxDb.Hsapiens.UCSC.hg19.knownGene
+          requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")
+          lenbase = TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
           }
      else stop("can't decode init[['NCBI_Build']][1] (typically 36 or 37 in 2016)")
      canonseqs = paste0("chr", c(1:22, "X", "Y"))
@@ -110,8 +114,8 @@ rainfallBQ = function(bq, studytag="LUAD", VariantType="SNP", id="TCGA-05-4398",
   df = df[which(df$variant_type == "SNP"), ]
   df$Subst = with(df, subt(reference_allele, tumor_seq_allele1, tumor_seq_allele2) )
   df = df[ which(df$Subst %in% names(colmap)), ]
-  if (genome(maemut)[1] == "36") lenbase = TxDb.Hsapiens.UCSC.hg18.knownGene
-  if (genome(maemut)[1] == "37") lenbase = TxDb.Hsapiens.UCSC.hg19.knownGene
+  if (genome(maemut)[1] == "36") lenbase = TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
+  if (genome(maemut)[1] == "37") lenbase = TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
   canonseqs = paste0("chr", c(1:22, "X", "Y"))
   slens = seqlengths(lenbase)[canonseqs]
   soff = c(0, cumsum(as.numeric(slens[-length(slens)])))
