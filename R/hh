@@ -1,9 +1,0 @@
-
- demos = clueDemos()
- nd = length(demos)
- chk = lapply(seq_len(nd), function(x) query_clue( service=names(demos)[x],
-               filter=demos[[x]]) )
- names(chk) = names(demos)
- ans = sapply(chk, sapply, length)
- ans 
-
