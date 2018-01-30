@@ -2,10 +2,13 @@
 
 export(TcgaMutCounts)
 export(TcgaNIndWithAnyMut)
+export(clueDemos)
 export(load_NRAS_AHR)
 export(load_ccleNRAS)
 export(load_nrasdf)
 export(oncoPrintISB)
+export(pertClasses)
+export(query_clue)
 import(ComplexHeatmap)
 import(S4Vectors)
 import(TxDb.Hsapiens.UCSC.hg18.knownGene)

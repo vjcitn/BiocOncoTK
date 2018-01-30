@@ -48,6 +48,7 @@ data from public archives and portals.  Key resource centers of interest include
         - Bioconductor's [curatedTCGAData](https://bioconductor.org/packages/curatedTCGAData/) interface
     - [TARGET](https://ocg.cancer.gov/programs/target) through ISB-CGC
     - [cBioPortal](http://www.cbioportal.org/); our main concern is to simplify usage of the RESTful API with R
+    - [CLUE](http://clue.io), "a cloud-based software platform for the analysis of perturbational datasets generated using gene expression (L1000) and proteomic (P100 and GCP) assays"
     - [Ivy Glioblastoma Atlas Project](http://glioblastoma.alleninstitute.org/)
     - [TCIA](http://www.cancerimagingarchive.net/), with radiology and pathology
 components available through [ISB/BigQuery](http://isb-cancer-genomics-cloud.readthedocs.io/en/latest/sections/TCGA-images.html)
@@ -283,4 +284,47 @@ gene AHR.
 ```{r mrg}
 rexp = merge(rr, NRAS_AHR)
 rexp[1:2,]
+```
+
+### CLUE
+
+The CLUE platform is an interface to results of work on the connectivity map at Broad
+Institute.  Usage of functions in this toolkit requires an API key, which can be
+acquired through registration at clue.io.  Set the environment variable
+`CLUE_KEY` so that it can be found by `Sys.getenv` to use default `key` parameter
+to functions described here.
+
+A basic purpose of the interface to CLUE is to allow identification of
+gene signatures of perturbations in specific cellular contexts.
+
+A number of API services have demonstration query expressions available
+in the package:
+```{r lkdem}
+cd = clueDemos()
+names(cd)
+cd$sigs
+```
+
+We use `query_clue` to query a service.  Here we ask for
+perturbagens that have EGFR among their targets.  We'll retrieve
+a single 'gold' signature identifier.
+
+```{r lkp1}
+if (nchar(Sys.getenv("CLUE_KEY"))>0) {
+lkbytarg = query_clue(service="perts", filter=list(where=list(target="EGFR")))
+names(lkbytarg[[1]])
+sig1 = lkbytarg[[1]]$sig_id_gold[1]
+}
+```
+
+Now we obtain the metadata about this signature.
+```{r lkp2}
+if (nchar(Sys.getenv("CLUE_KEY"))>0) {
+sig1d = query_clue(service="sigs", filter=list(where=list(sig_id=sig1)))
+names(sig1d[[1]])
+head(sig1d[[1]]$pert_iname) # perturbagen
+head(sig1d[[1]]$cell_id)  # cell type
+head(sig1d[[1]]$dn50_lm)  # some downregulated genes among the landmark
+head(sig1d[[1]]$up50_lm)  # some upregulated genes among the landmark
+}
 ```
