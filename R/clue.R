@@ -1,11 +1,11 @@
 .testClue = function(key=Sys.getenv("CLUE_KEY")) {
-  requireNamespace("httr")
-  requireNamespace("rjson")
   ans = httr::GET(sprintf('https://api.clue.io/api/cells?filter={"where":{"cell_id":"A375"}}&user_key=%s', key))
   rjson::fromJSON(readBin(ans$content, what="character"))
 }
 
 #' generate lists to generate clue API queries
+#' @import httr
+#' @import rjson
 #' @note These are converted to JSON (%20 substituted for embedded blanks.
 #' @export
 clueDemos = function() list(cells = 

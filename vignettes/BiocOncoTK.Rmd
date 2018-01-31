@@ -26,6 +26,7 @@ library(dplyr)
 library(DBI)
 library(magrittr)
 library(pogos)
+library(org.Hs.eg.db)
 })
 })
 ```
@@ -297,6 +298,18 @@ to functions described here.
 A basic purpose of the interface to CLUE is to allow identification of
 gene signatures of perturbations in specific cellular contexts.
 
+We have serialized data on cell lines and perturbagens available in
+the GSE70138 snapshot of LINCS.
+
+```{r lkda}
+data(cell_70138)
+names(cell_70138)
+table(cell_70138$primary_site)
+data(pert_70138)
+dim(pert_70138)
+names(pert_70138)
+```
+
 A number of API services have demonstration query expressions available
 in the package:
 ```{r lkdem}
@@ -312,7 +325,7 @@ a single 'gold' signature identifier.
 ```{r lkp1}
 if (nchar(Sys.getenv("CLUE_KEY"))>0) {
 lkbytarg = query_clue(service="perts", filter=list(where=list(target="EGFR")))
-names(lkbytarg[[1]])
+print(names(lkbytarg[[1]]))
 sig1 = lkbytarg[[1]]$sig_id_gold[1]
 }
 ```
@@ -321,10 +334,37 @@ Now we obtain the metadata about this signature.
 ```{r lkp2}
 if (nchar(Sys.getenv("CLUE_KEY"))>0) {
 sig1d = query_clue(service="sigs", filter=list(where=list(sig_id=sig1)))
-names(sig1d[[1]])
-head(sig1d[[1]]$pert_iname) # perturbagen
-head(sig1d[[1]]$cell_id)  # cell type
-head(sig1d[[1]]$dn50_lm)  # some downregulated genes among the landmark
-head(sig1d[[1]]$up50_lm)  # some upregulated genes among the landmark
+print(names(sig1d[[1]]))
+print(head(sig1d[[1]]$pert_iname)) # perturbagen
+print(head(sig1d[[1]]$cell_id))  # cell type
+print(head(sig1d[[1]]$dn50_lm))  # some downregulated genes among the landmark
+print(head(sig1d[[1]]$up50_lm))  # some upregulated genes among the landmark
 }
 ```
+
+#### Example
+
+Task: Assess the effects of perturbagens on transcription
+in the NPC cell line.  We'll check for recurrence of landmark
+genes among the top 50 upregulated for perturbagens that
+are identified as HDAC inhibitors.
+
+
+```{r lknpc, cache=TRUE}
+# use pertClasses() to get names of perturbagen classes in Clue
+tuinh = query_clue("perts", 
+   filter=list(where=list(pcl_membership=list(inq=list("CP_HDAC_INHIBITOR"))))) 
+inames_tu = sapply(tuinh, function(x)x$pert_iname)
+
+npcSigs = query_clue(service="sigs", filter=list(where=list(cell_id="NPC")))
+length(npcSigs)
+gns = lapply(npcSigs, function(x) x$up50_lm)
+perts = lapply(npcSigs, function(x) x$pert_iname)
+touse = which(perts %in% inames_tu)
+rec = names(tab <- sort(table(unlist(gns[touse])),decreasing=TRUE)[1:5])
+cbind(select(org.Hs.eg.db, keys=rec, columns="SYMBOL"), n=as.numeric(tab))
+```
+
+We could abstract from this process a function that takes perturbagen classes
+and cell lines to deliver collections of LINCS signatures of genes considered
+to produce transcriptional activities of certain kinds.
