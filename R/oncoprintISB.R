@@ -1,3 +1,13 @@
+Chromosome <- HGNC_gene_symbol <- Hugo_Symbol <- NCBI_Build <- 
+   ParticipantBarcode <- Reference_Allele <- Start_Position <- Study <- 
+   Subst <- Tumor_SampleTypeLetterCode <- Tumor_Seq_Allele1 <- 
+   Tumor_Seq_Allele2 <- Variant_Classification <- Variant_Type <- 
+   cDNA_Change <- cbounds <- chr <- chrmid <- 
+   genome <- ml10dbp <- normalized_count <- 
+   reference_allele <- seqinfo <- seqlengths <- 
+   sym <- totalgd <- tumor_seq_allele1 <- 
+   tumor_seq_allele2 <- yloc <- NULL
+
 # define gene sets from cbioPortal
 
 glioRTK = c(
@@ -50,6 +60,7 @@ isbVarsInTable = function(bq, tabletag = "Somatic_Mutation_calls") {
 
 #' obtain data frame with counts of mutation per gene symbol for selected tumor type
 #' @import bigrquery
+#' @import magrittr
 #' @param tumor character(1) defaults to 'BRCA'
 #' @param limit numeric(1) defaults to NULL, appended as limit to number of records returned if non-null
 #' @param db character(1) BigQuery database name
@@ -185,7 +196,7 @@ geneVecToOPInputByStudy = function(bq, genevec, studytag="LUAD") {
    "Silent", "Splice_Site")
  ttags = c("OTH;", "FRA;", "FRA;", "OTH;", "OTH;", "OTH;", "MIS;", "NONS;", "OTH;", "SPL;")
  names(ttags) = types
- targ = matrix("", nr=length(unique(jjj$Hugo_Symbol)), nc=length(unique(jjj$Particip)))
+ targ = matrix("", nrow=length(unique(jjj$Hugo_Symbol)), ncol=length(unique(jjj$Particip)))
  rownames(targ) = unique(jjj$Hugo_Symbol)
  colnames(targ) = unique(jjj$Particip)
  for (i in names(jjjs)) {  # types

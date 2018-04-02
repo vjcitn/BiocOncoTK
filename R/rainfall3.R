@@ -1,5 +1,6 @@
 #' @import ggplot2
 #' @import S4Vectors
+#' @import GenomeInfoDb
 #' @import TxDb.Hsapiens.UCSC.hg19.knownGene
 #' @import TxDb.Hsapiens.UCSC.hg18.knownGene
 
