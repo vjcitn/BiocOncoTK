@@ -19,10 +19,12 @@ query_clue(service = "profiles", filter = list(where = (list(pert_iname =
 run the api.clue.io API to acquire information on LINCS experiments
 }
 \examples{
+if (nchar(Sys.getenv("CLUE_KEY"))>0) {
 demos = clueDemos()
 nd = length(demos)
 chk = lapply(seq_len(nd), function(x) query_clue( service=names(demos)[x],
               filter=demos[[x]]) )
 names(chk) = names(demos)
 sapply(chk,length)
+}
 }

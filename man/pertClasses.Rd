@@ -13,6 +13,8 @@ pertClasses(key = Sys.getenv("CLUE_KEY"))
 enumerate perturbagen classes
 }
 \examples{
-if (nchar(Sys.getenv("CLUE_KEY"))>0) pc = pertClasses()
-head(vapply(pc, "[[", character(1), 1))
+if (nchar(Sys.getenv("CLUE_KEY"))>0) {
+  pc = pertClasses()
+  head(vapply(pc, "[[", character(1), 1))
+}
 }

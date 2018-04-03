@@ -38,17 +38,20 @@ clueServiceNames = function()
 #' @param filter a list to be converted to JSON for submission as a GET request
 #' @param key character(1) API key provided by clue.io
 #' @examples
+#' if (nchar(Sys.getenv("CLUE_KEY"))>0) {
 #' demos = clueDemos()
 #' nd = length(demos)
 #' chk = lapply(seq_len(nd), function(x) query_clue( service=names(demos)[x],
 #'               filter=demos[[x]]) )
 #' names(chk) = names(demos)
 #' sapply(chk,length)
+#' }
 #' @export
 query_clue = function(service = "profiles", 
     filter = list(where=(list(pert_iname='sirolimus',
                      cell_id='MCF7', assay='L1000'))),
     key = Sys.getenv("CLUE_KEY")) {
+    if (nchar(key)==0) stop("need environment variable CLUE_KEY properly set to proceed") else if (nchar(key)>0) {
     requireNamespace("httr")
     requireNamespace("rjson")
     stub = paste("https://api.clue.io/api/", service, "?", collapse="", sep="")
@@ -57,13 +60,16 @@ query_clue = function(service = "profiles",
     quer = gsub(" ", "%20", quer)
     ans = httr::GET(quer)
     rjson::fromJSON(readBin(ans$content, what="character"))
+    }
 }
 
 #' enumerate perturbagen classes
 #' @param key character(1) API key provided by clue.io
 #' @examples
-#' if (nchar(Sys.getenv("CLUE_KEY"))>0) pc = pertClasses()
-#' head(vapply(pc, "[[", character(1), 1))
+#' if (nchar(Sys.getenv("CLUE_KEY"))>0) {
+#'   pc = pertClasses()
+#'   head(vapply(pc, "[[", character(1), 1))
+#' }
 #' @export
 pertClasses = function(key=Sys.getenv("CLUE_KEY")) {
  pc = httr::GET(paste0("https://api.clue.io/api/pcls?user_key=",key))
