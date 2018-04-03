@@ -6,9 +6,15 @@
 \usage{
 clueServiceNames()
 }
+\value{
+a character vector of service names
+}
 \description{
 Provide names of some clue.io services for which examples are available in this package.
 }
 \note{
 See \url{https://clue.io/api}.
+}
+\examples{
+clueServiceNames()
 }

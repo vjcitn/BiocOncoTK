@@ -15,6 +15,9 @@ TcgaMutCounts(tumor, limit = NULL, db = "isb-cgc:tcga_201607_beta", project)
 
 \item{project}{character(1) project code}
 }
+\value{
+table as returned by bigrquery::query_exec
+}
 \description{
 obtain data frame with counts of mutation per gene symbol for selected tumor type
 }

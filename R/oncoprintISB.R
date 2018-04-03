@@ -67,6 +67,7 @@ isbVarsInTable = function(bq, tabletag = "Somatic_Mutation_calls") {
 #' @param project character(1) project code
 #' @note This function returns overall mutation count, and many individuals have multiple
 #' mutations recorded per gene.
+#' @return table as returned by bigrquery::query_exec
 #' @examples
 #' if (interactive()) {
 #' requireNamespace("bigrquery")
@@ -99,6 +100,7 @@ TcgaMutCounts = function(tumor, limit=NULL, db="isb-cgc:tcga_201607_beta", proje
 #' @param limit numeric(1) defaults to NULL, appended as limit to number of records returned if non-null
 #' @param db character(1) BigQuery database name
 #' @param project character(1) project code
+#' @return numeric(1)
 #' @examples
 #' if (interactive()) TcgaNIndWithAnyMut(project="cgc-05-0009")
 #' @export
@@ -148,7 +150,7 @@ exprsByMutation = function( bq, gene = "GATA3", studytag = "BRCA", project, limi
      mrg$Variant_Classification[which(lkna)] = substNAMut
   if (hasdup==0) return(mrg)
   smrg = split(mrg, mrg$ParticipantBarcode)
-  hasdup = which(sapply(smrg,nrow)>0)
+  hasdup = which(vapply(smrg,nrow,numeric(length(smrg)))>0)
   smrg[hasdup] = lapply(smrg[hasdup], function(x) { 
              tmp = dup.expr.action(x$normalized_count)
              fixd = x[1,,drop=FALSE]
@@ -217,6 +219,7 @@ geneVecToOPInputByStudy = function(bq, genevec, studytag="LUAD") {
 #' @param bq an instance of \code{\link[bigrquery]{BigQueryConnection-class}} authenticated for ISB Cancer Genomics Cloud access
 #' @note This function will start a shiny app and will generate queries to
 #' Google BigQuery tables representing TCGA.
+#' @return only used for side effect of running shiny app
 #' @examples
 #' if (interactive()) {
 #'  bcode = Sys.getenv("CGC_BILLING")
@@ -268,9 +271,9 @@ oncoPrintISB = function(bq) {
    output$setelem = renderDataTable({
       curset = gnsets[[input$geneset]]
       mkln = function(x) gsub("%%GENE%%", x, "<a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%%GENE%%&keywords=%%GENE%%'>%%GENE%%</a>")
-      lns = sapply(curset, mkln)
+      lns = vapply(curset, mkln, character(length(curset)))
 #      anc = function(x) paste0("<a href=\"", x, "\">", x, "</a>")
-#      lns = sapply(lns, anc)
+#      lns = sapply(lns, anc, character(length(lns)))
       data.frame(HGNC=lns) #, card=lns)
       }, escape=FALSE)
    }

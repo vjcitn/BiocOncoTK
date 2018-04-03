@@ -9,6 +9,9 @@ pertClasses(key = Sys.getenv("CLUE_KEY"))
 \arguments{
 \item{key}{character(1) API key provided by clue.io}
 }
+\value{
+a character vector
+}
 \description{
 enumerate perturbagen classes
 }

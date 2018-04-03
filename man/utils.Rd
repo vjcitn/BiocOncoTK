@@ -12,6 +12,13 @@ load_NRAS_AHR()
 
 load_nrasdf()
 }
+\value{
+a list of DRProfSet instances
+
+a data.frame with fields 'Cell_line_primary_name', 'RMA_normalized_expression', 'HGNC_gene_symbol'
+
+a data.frame
+}
 \description{
 utilities for mock data (not involving internet access for vignette)
 }
@@ -20,4 +27,5 @@ These functions are provided only for avoiding reliance on internet connectivity
 }
 \examples{
 load_ccleNRAS()
+dim(load_nrasdf())
 }

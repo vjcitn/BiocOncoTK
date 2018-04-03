@@ -7,6 +7,9 @@
 #' @import httr
 #' @import rjson
 #' @note These are converted to JSON (%20 substituted for embedded blanks.
+#' @return a list of lists of strings with 'where' and substructure as appropriate
+#' @examples
+#' clueDemos()
 #' @export
 clueDemos = function() list(cells = 
               list(where=list(cell_id="A375")),
@@ -30,6 +33,10 @@ clueDemos = function() list(cells =
 
 #' Provide names of some clue.io services for which examples are available in this package.
 #' @note See \url{https://clue.io/api}.
+#' @return a character vector of service names
+#' @examples
+#' clueServiceNames()
+#' @export
 clueServiceNames = function() 
    c("cells", "genes", "profiles", "perts", "sigs", "rep_drug_moas")
    
@@ -37,6 +44,7 @@ clueServiceNames = function()
 #' @param service a character(1) service name
 #' @param filter a list to be converted to JSON for submission as a GET request
 #' @param key character(1) API key provided by clue.io
+#' @return API return value processed by fromJSON
 #' @examples
 #' if (nchar(Sys.getenv("CLUE_KEY"))>0) {
 #' demos = clueDemos()
@@ -65,6 +73,7 @@ query_clue = function(service = "profiles",
 
 #' enumerate perturbagen classes
 #' @param key character(1) API key provided by clue.io
+#' @return a character vector
 #' @examples
 #' if (nchar(Sys.getenv("CLUE_KEY"))>0) {
 #'   pc = pertClasses()

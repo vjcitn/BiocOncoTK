@@ -6,9 +6,15 @@
 \usage{
 clueDemos()
 }
+\value{
+a list of lists of strings with 'where' and substructure as appropriate
+}
 \description{
 generate lists to generate clue API queries
 }
 \note{
 These are converted to JSON (%20 substituted for embedded blanks.
+}
+\examples{
+clueDemos()
 }

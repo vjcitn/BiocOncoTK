@@ -15,6 +15,9 @@ query_clue(service = "profiles", filter = list(where = (list(pert_iname =
 
 \item{key}{character(1) API key provided by clue.io}
 }
+\value{
+API return value processed by fromJSON
+}
 \description{
 run the api.clue.io API to acquire information on LINCS experiments
 }

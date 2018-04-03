@@ -16,6 +16,9 @@ TcgaNIndWithAnyMut(tumor = "BRCA", limit = NULL,
 
 \item{project}{character(1) project code}
 }
+\value{
+numeric(1)
+}
 \description{
 Give count of individuals with a mutation recorded for selected tumor
 }
