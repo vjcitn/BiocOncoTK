@@ -39,7 +39,6 @@ pancan_tabulate = function(dataset="Annotated", tblname, vblname) {
 }
 
 #' provide a shiny app to 'glimpse' structure and content of pancan atlas
-#' @import shiny
 #' @import DT
 #' @param dataset character(1) name of a BigQuery dataset in the pancan-atlas project
 #' @param nrecs numeric(1) number of records to request (limited through the n= parameter to as.data.table

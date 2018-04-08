@@ -1,6 +1,6 @@
 #' CCLE_DRUG_BROAD: serialization of legacy CCLE 'Drug data' from Broad Institute
 #' @importFrom utils data
-#' @importFrom dplyr tbl tbl_df select filter summarise n group_by src_tbls tbl_vars
+#' @importFrom dplyr tbl tbl_df select filter summarise n group_by src_tbls tbl_vars select_ group_by_
 #' @importFrom S4Vectors metadata
 #' @docType data
 #' @format S4Vectors DataFrame instance

@@ -212,7 +212,7 @@ geneVecToOPInputByStudy = function(bq, genevec, studytag="LUAD") {
 
 
 #' interactive interface to ComplexHeatmap oncoPrint with inputs from ISB Cancer Genomics Cloud BigQuery back end
-#' @import shiny
+#' @rawNamespace import("shiny", except=c("dataTableOutput", "renderDataTable"))
 #' @import ComplexHeatmap
 #' @import grid
 #' @importFrom methods is
