@@ -18,6 +18,7 @@
 #' @examples
 #' data(cell_70138)
 "cell_70138"
+
 #' pert_70138: a table with perturbagen information from LINCS
 #' @docType data
 #' @format data.frame
@@ -25,3 +26,27 @@
 #' @examples
 #' data(pert_70138)
 "pert_70138"
+
+#' pancan.clin.varnames: a data.frame with a list of variable names for clinical patient data
+#' @docType data
+#' @format data.frame
+#' @source pancancer-atlas in BigQuery
+#' @examples
+#' BiocOncoTK::pancan.clin.varnames[1:5,]
+"pancan.clin.varnames"
+
+#' table names in Annotated pancancer data release
+#' @docType data
+#' @format character vector
+#' @source pancancer-atlas in BigQuery
+#' @examples
+#' BiocOncoTK::annotTabs
+"annotTabs"
+
+#' helper for interpreting ICD-10 codes
+#' @docType data
+#' @format data.frame
+#' @source ICD-10
+#' @examples
+#' BiocOncoTK::icd10_c
+"icd10_c"
