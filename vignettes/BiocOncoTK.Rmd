@@ -44,6 +44,7 @@ data from public archives and portals.  Key resource centers of interest include
     - [TCGA](https://cancergenome.nih.gov/), with curated representations through
         - the [ISB Cancer Genomics Cloud project](http://cgc.systemsbiology.net/)
         - Bioconductor's [curatedTCGAData](https://bioconductor.org/packages/curatedTCGAData/) interface
+        - The [ISB pan-cancer atlas mirror](http://isb-cancer-genomics-cloud.readthedocs.io/en/latest/sections/PanCancer-Atlas-Mirror.html)
     - [TARGET](https://ocg.cancer.gov/programs/target) through ISB-CGC
     - [cBioPortal](http://www.cbioportal.org/); our main concern is to simplify usage of the RESTful API with R
     - [CLUE](http://clue.io), "a cloud-based software platform for the analysis of perturbational datasets generated using gene expression (L1000) and proteomic (P100 and GCP) assays"
@@ -78,6 +79,46 @@ onto_plot(oto, st@ontoTags, fontsize=50)
 ```
 
 # Resource interfaces
+
+## PanCancer Atlas
+
+The following code will run if you have a valid setting
+for environment variable `CGC_BILLING`, to allow 
+BiocOncoTK::pancan_BQ() to generate a proper BigQueryConnection.
+
+```{r lkl, eval=FALSE}
+library(BiocOncoTK)
+pcbq = pancan_BQ() # basic connection
+# pcbq %>% dbListTables() # list all tables
+clin = pcbq %>% tbl("clinical_PANCAN_patient_with_followup")
+clinBRCA = clin %>% filter(acronym=="BRCA")
+adf = clinBRCA %>% as.data.frame(n=1099)
+clinBRCA_DF = DataFrame(adf)
+rownames(clinBRCA_DF) = clinBRCA_DF[,2]  # sample names
+library(SummarizedExperiment)
+m = BQ3_Source( pcbq, "pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot", 
+   "ID", "ParticipantBarcode", "Study", "BRCA", "miRNAexpr")  
+mq = BQ3_Array(m)
+BRCA_mir = SummarizedExperiment(assays=SimpleList(mirna=mq), colData=clinBRCA_DF[m@allcolnames,])
+BRCA_mir
+```
+The result is
+
+```
+> BRCA_mir
+class: SummarizedExperiment 
+dim: 743 975 
+metadata(0):
+assays(1): mirna
+rownames(743): hsa-miR-191-3p hsa-miR-3065-3p ... hsa-miR-4445-5p
+  hsa-miR-515-3p
+rowData names(0):
+colnames(975): TCGA-3C-AALI TCGA-5T-A9QA ... TCGA-UL-AAZ6 TCGA-XX-A89A
+colData names(746): bcr_patient_uuid bcr_patient_barcode ...
+  bilirubin_upper_limit days_to_last_known_alive
+```
+
+
 
 ## TARGET
 
