@@ -216,7 +216,7 @@ geneVecToOPInputByStudy = function(bq, genevec, studytag="LUAD") {
 #' @import ComplexHeatmap
 #' @import grid
 #' @importFrom methods is
-#' @param bq an instance of \code{\link[bigrquery]{BigQueryConnection-class}} authenticated for ISB Cancer Genomics Cloud access
+#' @param bq an instance of \code{\link[bigrquery:DBI]{BigQueryConnection-class}} authenticated for ISB Cancer Genomics Cloud access
 #' @note This function will start a shiny app and will generate queries to
 #' Google BigQuery tables representing TCGA.
 #' @return only used for side effect of running shiny app

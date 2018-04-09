@@ -7,7 +7,7 @@
 oncoPrintISB(bq)
 }
 \arguments{
-\item{bq}{an instance of \code{\link[bigrquery]{BigQueryConnection-class}} authenticated for ISB Cancer Genomics Cloud access}
+\item{bq}{an instance of \code{\link[bigrquery:DBI]{BigQueryConnection-class}} authenticated for ISB Cancer Genomics Cloud access}
 }
 \value{
 only used for side effect of running shiny app
