@@ -212,7 +212,6 @@ geneVecToOPInputByStudy = function(bq, genevec, studytag="LUAD") {
 
 
 #' interactive interface to ComplexHeatmap oncoPrint with inputs from ISB Cancer Genomics Cloud BigQuery back end
-#' @rawNamespace import("shiny", except=c("dataTableOutput", "renderDataTable"))
 #' @import ComplexHeatmap
 #' @import grid
 #' @importFrom methods is
@@ -233,31 +232,32 @@ geneVecToOPInputByStudy = function(bq, genevec, studytag="LUAD") {
 oncoPrintISB = function(bq) {
   stopifnot(is(bq, "BigQueryConnection"))
   if (!requireNamespace("bigrquery")) stop("install bigrquery to run oncoPrintISB")
+  if (!requireNamespace("shiny")) stop("install shiny to run oncoPrintISB")
   if (!requireNamespace("dbplyr")) stop("install dbplyr to run oncoPrintISB")
   if (!requireNamespace("magrittr")) stop("install magrittr to run oncoPrintISB")
   gnsets = someSets
   studies = sort((studiesInTable(bq) %>% as.data.frame())[,1])
-  ui = fluidPage(
-    titlePanel("TCGA/ISB/bigQuery interface"),
-    sidebarPanel(
-     fluidRow(
-      selectInput("study", "Tumor", choices=studies, selected="LUAD", selectize=TRUE),
-      selectInput("geneset", "Gene set", choices=names(gnsets), selected=names(gnsets)[1], selectize=TRUE)
+  ui = shiny::fluidPage(
+    shiny::titlePanel("TCGA/ISB/bigQuery interface"),
+    shiny::sidebarPanel(
+     shiny::fluidRow(
+      shiny::selectInput("study", "Tumor", choices=studies, selected="LUAD", selectize=TRUE),
+      shiny::selectInput("geneset", "Gene set", choices=names(gnsets), selected=names(gnsets)[1], selectize=TRUE)
       ), width=3
      ), # end sidebar
-    mainPanel(
-     tabsetPanel(
-      tabPanel("oncoPrint", textOutput("nind"), plotOutput("onco")),
-      tabPanel("genes", dataTableOutput("setelem"))
+    shiny::mainPanel(
+     shiny::tabsetPanel(
+      shiny::tabPanel("oncoPrint", shiny::textOutput("nind"), shiny::plotOutput("onco")),
+      shiny::tabPanel("genes", shiny::dataTableOutput("setelem"))
       )
     )
    )
   server = function(input, output) {
-   output$nind = renderText({
+   output$nind = shiny::renderText({
       nind = TcgaNIndWithAnyMut( input$study, project = bq@billing )
       sprintf("Using data on %d individuals with any mutation for %s", nind, input$study)
       })
-   output$onco = renderPlot({
+   output$onco = shiny::renderPlot({
       curstudy = input$study
       curset = gnsets[[input$geneset]]
       op = geneVecToOPInputByStudy(bq, curset, studytag=curstudy) 
@@ -268,7 +268,7 @@ oncoPrintISB = function(bq) {
       draw(oncoPrint(op, get_type = function(x) strsplit(x, ";")[[1]], alter_fun=alter_fun, col=col))
       #plot(1,1)
    })
-   output$setelem = renderDataTable({
+   output$setelem = shiny::renderDataTable({
       curset = gnsets[[input$geneset]]
       mkln = function(x) gsub("%%GENE%%", x, "<a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%%GENE%%&keywords=%%GENE%%'>%%GENE%%</a>")
       lns = vapply(curset, mkln, character(length(curset)))
@@ -277,5 +277,5 @@ oncoPrintISB = function(bq) {
       data.frame(HGNC=lns) #, card=lns)
       }, escape=FALSE)
    }
-  shinyApp(ui, server)
+  shiny::shinyApp(ui, server)
 } 

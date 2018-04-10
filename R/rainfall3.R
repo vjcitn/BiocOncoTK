@@ -1,8 +1,4 @@
-#' @import ggplot2
 #' @import S4Vectors
-#' @import GenomeInfoDb
-#' @import TxDb.Hsapiens.UCSC.hg19.knownGene
-#' @import TxDb.Hsapiens.UCSC.hg18.knownGene
 
 midpts = function(x) {
 # given n interval boundaries obtain n-1 midpts
@@ -10,13 +6,16 @@ c(x[1]/2, x[-length(x)] + diff(x)/2)
 }
 
 chrbounds_basic = function(genome="hg18") {
+ if (!requireNamespace("GenomeInfoDb")) stop("install GenomeInfoDb to run this function")
  if (genome=="hg19") {
-    requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")
-    info = seqinfo(TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene)[paste0("chr", c(1:22, "X", "Y")),]
+    if (!requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")) stop(
+		"install TxDb.Hsapiens.UCSC.hg19.knownGene to run this function")
+    info = GenomeInfoDb::seqinfo(TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene)[paste0("chr", c(1:22, "X", "Y")),]
     }
  else if (genome=="hg18") {
-    requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")
-    info = seqinfo(TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene)[paste0("chr", c(1:22, "X", "Y")),]
+    if (!requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")) stop(
+                "install TxDb.Hsapiens.UCSC.hg18.knownGene to run this function")
+    info = GenomeInfoDb::seqinfo(TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene)[paste0("chr", c(1:22, "X", "Y")),]
     }
  cumsum(as.numeric(seqlengths(info)))
 }
@@ -49,11 +48,13 @@ subt = function(ref, a1, a2) {
      init$Chromosome = paste0("chr", init$Chromosome)
      init = init[ which(init$Subst %in% names(colmap)), ]
      if (init$NCBI_Build[1] == "36") {
-          requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")
+          if (!requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")) stop(
+       "install TxDb.Hsapiens.UCSC.hg18.knownGene to run this function")
           lenbase = TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
           }
      else if (init$NCBI_Build[1] == "37") {
-          requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")
+          if (!requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")) stop(
+       "install TxDb.Hsapiens.UCSC.hg19.knownGene to run this function")
           lenbase = TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
           }
      else stop("can't decode init[['NCBI_Build']][1] (typically 36 or 37 in 2016)")
@@ -74,6 +75,7 @@ subt = function(ref, a1, a2) {
 rainfallBQ = function(bq, studytag="LUAD", VariantType="SNP", id="TCGA-05-4398", colmap=kataColors(),
     ymax = 9, inylab="-log10 dbp", inxlab="chromosome", intitle, 
     addbounds=TRUE, cnames=TRUE) {
+  if (!requireNamespace("ggplot2")) stop("install ggplot2 to run this function")
 #
 # basis is the ISB BigQuery for TCGA
 #
@@ -81,25 +83,25 @@ rainfallBQ = function(bq, studytag="LUAD", VariantType="SNP", id="TCGA-05-4398",
   di = c(log10(df$totalgd[1]/2), log10(diff(df$totalgd) + 1))
   df_new = data.frame(totalgd=df$totalgd, ml10dbp=di, Subst=df$Subst, chr=df$Chromosome, start=df$Start_Position,
      sym=df$Hugo_Symbol, stringsAsFactors=FALSE) # drop dist from origin
-  gob = ggplot(data=df_new, aes(x=totalgd, y=ml10dbp, colour=Subst, text=chr, loc=start, text2=sym)) +
-                  geom_point()
+  gob = ggplot2::ggplot(data=df_new, ggplot2::aes(x=totalgd, y=ml10dbp, colour=Subst, text=chr, loc=start, text2=sym)) +
+                  ggplot2::geom_point()
   gcode = ifelse(df$NCBI_Build[1]=="36", "hg18", "hg19")
   ndf = data.frame(cbounds=chrbounds_basic(genome=gcode))
   ndf$chrmid = midpts(ndf$cbounds)
   ndf$chr = c(1:22, "X", "Y")
   ndf = cbind(ndf, yloc=0)
-  ans = gob + theme( panel.grid.major = element_blank(),
-                       panel.grid.minor = element_blank(),
-                       axis.ticks.x=element_blank(),
-                       axis.text.x=element_blank()) +
-                         ylab(inylab) + xlab(inxlab)
+  ans = gob + ggplot2::theme( panel.grid.major = ggplot2::element_blank(),
+                       panel.grid.minor = ggplot2::element_blank(),
+                       axis.ticks.x=ggplot2::element_blank(),
+                       axis.text.x=ggplot2::element_blank()) +
+                         ggplot2::ylab(inylab) + ggplot2::xlab(inxlab)
   if (addbounds) ans = ans +
-       geom_vline( aes(xintercept=cbounds, y=yloc), color="green", data=ndf )  +
-       scale_x_continuous(expand=c(.01,.01))
-  if (!missing(intitle)) ans = ans + ggtitle(intitle)
-   else ans = ans + ggtitle(paste(studytag, id))
+       ggplot2::geom_vline( ggplot2::aes(xintercept=cbounds, y=yloc), color="green", data=ndf )  +
+       ggplot2::scale_x_continuous(expand=c(.01,.01))
+  if (!missing(intitle)) ans = ans + ggplot2::ggtitle(intitle)
+   else ans = ans + ggplot2::ggtitle(paste(studytag, id))
   if (cnames) ans = ans +
-         geom_text(aes(x=chrmid,y=yloc,label=chr), data=ndf, inherit.aes=FALSE, size=3)
+         ggplot2::geom_text(ggplot2::aes(x=chrmid,y=yloc,label=chr), data=ndf, inherit.aes=FALSE, size=3)
   ans
 }
 
