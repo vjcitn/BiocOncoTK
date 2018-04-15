@@ -50,3 +50,55 @@
 #' @examples
 #' BiocOncoTK::icd10_c
 "icd10_c"
+
+#' helper for interpreting pancan-atlas sample type codes
+#' @docType data
+#' @format data.frame
+#' @source ISB BigQuery pancan-atlas project
+#' @note The sample type codes are not straightforward to interpret.
+#' Primary solid tumor is denoted "TP", and metastatic samples are 
+#' denoted "TM".  This data frame pairs code and natural language terms.
+#' @examples
+#' BiocOncoTK::pancan_sampTypeMap
+"pancan_sampTypeMap"
+
+#' a virtual MultiAssayExperiment for pancancer-atlas BRCA data
+#' @md
+#' @docType data
+#' @format MultiAssayExperiment instance with DelayedArray (BQ3_Array) assay data
+#' @source ISB BigQuery pancan-atlas project
+#' @note Constructed as
+#' ```
+#' library(BiocOncoTK)
+#' pcbq = pancan_BQ()
+#' library(restfulSE)
+#' BRCA_mir = pancan_SE(pcbq)
+#' BRCA_mrna = pancan_SE(pcbq,
+#'    assayDataTableName = pancan_longname("rnaseq"),
+#'    assayFeatureName = "Entrez",
+#'    assayValueFieldName = "normalized_count")
+#' BRCA_rppa = pancan_SE(pcbq,
+#'    assayDataTableName = pancan_longname("RPPA"),
+#'    assayFeatureName = "Protein",
+#'    assayValueFieldName = "Value")
+#' BRCA_meth = pancan_SE(pcbq,
+#'    assayDataTableName = pancan_longname("27k")[2],
+#'    assayFeatureName = "ID",
+#'    assayValueFieldName = "Beta")
+#' library(MultiAssayExperiment)
+#' library(dplyr)
+#' library(magrittr)
+#' clinBRCA = pcbq %>% tbl(pancan_longname("clinical")) %>%
+#'   filter(acronym=="BRCA") %>% as.data.frame() 
+#' rownames(clinBRCA) = clinBRCA[,2]
+#' clinDF = DataFrame(clinBRCA)
+#' library(MultiAssayExperiment)
+#' brcaMAE = MultiAssayExperiment(
+#'   ExperimentList(rnaseq=BRCA_mrna, meth=BRCA_meth, rppa=BRCA_rppa,
+#'     mirna=BRCA_mir),colData=clinDF)
+#' upsetSamples(brcaMAE) # to view display
+#' ```
+#' @examples
+#' if (requireNamespace("MultiAssayExperiment"))
+#' BiocOncoTK::brcaMAE
+"brcaMAE"

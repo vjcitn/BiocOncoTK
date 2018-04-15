@@ -1,3 +1,6 @@
+genome <- ggplot <- aes <- geom_point <-
+ theme <- element_blank <- ylab <- xlab <- geom_vline <-
+ scale_x_continuous <- ggtitle <- geom_text <- NULL
 #' @import S4Vectors
 
 midpts = function(x) {

@@ -95,3 +95,16 @@ pancan_app = function(dataset="Annotated", nrecs=5) {
  }
  shinyApp(ui=ui, server=server)
 } 
+
+#' utility to help find long table names
+#' @param guess a regexp to match the table of interest
+#' @param \dots passed to \code{\link[base]{agrep}}
+#' @return character vector of matches
+#' @note Note that ignore.case=TRUE is set in the function.
+#' @examples
+#' pancan_longname("rnaseq")
+#' @export
+pancan_longname  = function(guess, ...) 
+  agrep(guess, BiocOncoTK::annotTabs, value=TRUE,
+    ignore.case=TRUE, ...)
+

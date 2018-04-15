@@ -2,12 +2,13 @@ Package: BiocOncoTK
 Title: Bioconductor components for general cancer genomics
 Description: Provide a central interface to various tools for
 	genome-scale analysis of cancer studies.  
-Version: 0.99.9
+Version: 0.99.10
 Author: Vince Carey
-Suggests: knitr, dbplyr, DBI, org.Hs.eg.db,
+Suggests: knitr, dbplyr, DBI, org.Hs.eg.db, MultiAssayExperiment,
 	BiocStyle, ontoProc, ontologyPlot, pogos,
-	ggplot2, GenomeInfoDb,
-	TxDb.Hsapiens.UCSC.hg19.knownGene, TxDb.Hsapiens.UCSC.hg18.knownGene
+	ggplot2, GenomeInfoDb, restfulSE,
+	TxDb.Hsapiens.UCSC.hg19.knownGene, 
+	TxDb.Hsapiens.UCSC.hg18.knownGene
 Imports: ComplexHeatmap, S4Vectors, bigrquery, shiny,
 	httr, rjson, dplyr, magrittr, grid, utils, DT
 Depends: R (>= 3.5.0), methods

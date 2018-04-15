@@ -24,6 +24,7 @@ library(DBI)
 library(magrittr)
 library(pogos)
 library(org.Hs.eg.db)
+library(restfulSE)
 })
 })
 ```
@@ -82,42 +83,170 @@ onto_plot(oto, st@ontoTags, fontsize=50)
 
 ## PanCancer Atlas
 
+In conjunction with `r Biocpkg("restfulSE")` which handles
+aspects of the interface to BigQuery, this package
+provides tools for working with the PanCancer atlas
+project data.
+
+### Sample types
+
+A key feature distinguishing the pancancer-atlas project
+from TCGA is the availability of data from normal tissue or
+metastatic or recurrent tumor samples.  Codes
+are used to distinguish the different sources:
+```{r lktata}
+BiocOncoTK::pancan_sampTypeMap
+```
+
+### SummarizedExperiments per assay per tumor or other sample type
+
 The following code will run if you have a valid setting
 for environment variable `CGC_BILLING`, to allow 
 BiocOncoTK::pancan_BQ() to generate a proper BigQueryConnection.
 
 ```{r lkl, eval=FALSE}
 library(BiocOncoTK)
-pcbq = pancan_BQ() # basic connection
-# pcbq %>% dbListTables() # list all tables
-clin = pcbq %>% tbl("clinical_PANCAN_patient_with_followup")
-clinBRCA = clin %>% filter(acronym=="BRCA")
-adf = clinBRCA %>% as.data.frame(n=1099)
-clinBRCA_DF = DataFrame(adf)
-rownames(clinBRCA_DF) = clinBRCA_DF[,2]  # sample names
-library(SummarizedExperiment)
-m = BQ3_Source( pcbq, "pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot", 
-   "ID", "ParticipantBarcode", "Study", "BRCA", "miRNAexpr")  
-mq = BQ3_Array(m)
-BRCA_mir = SummarizedExperiment(assays=SimpleList(mirna=mq), colData=clinBRCA_DF[m@allcolnames,])
-BRCA_mir
+if (nchar(Sys.getenv("CGC_BILLING"))>0) {
+ pcbq = pancan_BQ() # basic connection
+ BRCA_mir = restfulSE::pancan_SE(pcbq)
+}
 ```
 The result is
 
 ```
 > BRCA_mir
 class: SummarizedExperiment 
-dim: 743 975 
+dim: 743 1068 
 metadata(0):
-assays(1): mirna
-rownames(743): hsa-miR-191-3p hsa-miR-3065-3p ... hsa-miR-4445-5p
-  hsa-miR-515-3p
+assays(1): assay
+rownames(743): hsa-miR-30d-3p hsa-miR-486-3p ... hsa-miR-525-3p
+  hsa-miR-892b
 rowData names(0):
-colnames(975): TCGA-3C-AALI TCGA-5T-A9QA ... TCGA-UL-AAZ6 TCGA-XX-A89A
+colnames(1068): TCGA-LD-A7W6 TCGA-BH-A18I ... TCGA-E9-A1N9 TCGA-B6-A0X0
 colData names(746): bcr_patient_uuid bcr_patient_barcode ...
   bilirubin_upper_limit days_to_last_known_alive
 ```
 
+To shift attention to the normal tissue samples provided, use
+```{r lknor,eval=FALSE}
+ BRCA_mir_nor = restfulSE::pancan_SE(pcbq, assaySampleTypeCode="NT")
+```
+to find
+```
+class: SummarizedExperiment 
+dim: 743 90 
+metadata(0):
+assays(1): assay
+rownames(743): hsa-miR-7641 hsa-miR-135a-5p ... hsa-miR-1323
+  hsa-miR-520d-5p
+rowData names(0):
+colnames(90): TCGA-BH-A18P TCGA-BH-A18S ... TCGA-E9-A1N6 TCGA-E9-A1N9
+colData names(746): bcr_patient_uuid bcr_patient_barcode ...
+  bilirubin_upper_limit days_to_last_known_alive
+```
+The intersection of the colnames from the two SummarizedExperiments
+thus formed (patients contributing
+both solid tumor and matched normal) has length 89. 
+
+<!--
+function (bqcon, colDataTableName = "clinical_PANCAN_patient_with_followup", 
+    colDSubjectIdName = "bcr_patient_barcode", colDFilterField = "acronym", 
+    colDFilterValue = "BRCA", assayDataTableName = "pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot", 
+    assayFeatureName = "ID", subjectIDName = "ParticipantBarcode", 
+    tumorFieldName = "Study", tumorFieldValue = "BRCA", assayValueFieldName = "miRNAexpr") 
+NULL
+-->
+
+
+### Multiassay experiments per tumor
+
+Suppose we want to work with the mRNA, RPPA, 
+27k/450k merged methylation and miRNA data together.
+We can invoke pancan_SE again, specifying the appropriate
+tables and fields.
+```{r dose2, eval=FALSE}
+BRCA_mrna = pancan_SE(pcbq,
+   assayDataTableName = pancan_longname("rnaseq"),
+   assayFeatureName = "Entrez",
+   assayValueFieldName = "normalized_count")
+BRCA_rppa = pancan_SE(pcbq,
+   assayDataTableName = pancan_longname("RPPA"),
+   assayFeatureName = "Protein",
+   assayValueFieldName = "Value")
+BRCA_meth = pancan_SE(pcbq,
+   assayDataTableName = pancan_longname("27k")[2],
+   assayFeatureName = "ID",
+   assayValueFieldName = "Beta")
+```
+
+After obtaining the clinical data for BRCA with
+```
+library(dplyr)
+library(magrittr)
+clinBRCA = pcbq %>% tbl(pancan_longname("clinical")) %>% 
+  filter(acronym=="BRCA") %>% as.data.frame() 
+rownames(clinBRCA) = clinBRCA[,2]
+clinDF = DataFrame(clinBRCA)
+```
+we use
+```
+library(MultiAssayExperiment)
+brcaMAE = MultiAssayExperiment(
+  ExperimentList(rnaseq=BRCA_mrna, meth=BRCA_meth, rppa=BRCA_rppa,
+    mirna=BRCA_mir),colData=clinDF)
+```
+to generate `brcaMAE`.  No assay data are present in
+this object, but data are retrieved on request.
+```
+> brcaMAE
+A MultiAssayExperiment object of 4 listed
+ experiments with user-defined names and respective classes. 
+ Containing an ExperimentList class object of length 4: 
+ [1] rnaseq: SummarizedExperiment with 20531 rows and 1097 columns 
+ [2] meth: SummarizedExperiment with 22601 rows and 1067 columns 
+ [3] rppa: SummarizedExperiment with 259 rows and 873 columns 
+ [4] mirna: SummarizedExperiment with 743 rows and 1068 columns 
+Features: 
+ experiments() - obtain the ExperimentList instance 
+ colData() - the primary/phenotype DataFrame 
+ sampleMap() - the sample availability DataFrame 
+ `$`, `[`, `[[` - extract colData columns, subset, or experiment 
+ *Format() - convert into a long or wide DataFrame 
+ assays() - convert ExperimentList to a SimpleList of matrices
+```
+
+It is convenient to check for sample availability for the
+different assays using `upsetSamples` in `r Biocpkg("MultiAssayExperiment")`.
+
+![The upset diagram for brcaMAE, showing sample availability per assay.](brca4upset.png)
+
+## Supporting infrastructure
+
+The API for `pancan_SE` in `r Biocpkg("restfulSE")` is complicated.
+```{r lkapi}
+args(restfulSE::pancan_SE)
+```
+
+Long, metadata-laden names are used for some tables,
+the clinical characteristics table has over 700 variables,
+and fields bearing information common to different tables
+may not have common names.  Help is needed to permit
+programming for integrative analysis.  BiocOncoTK provides
+the following assistance:
+
+- `pancan_app`: a shiny app that provides interactive table and data 
+overviews
+
+![pancan_app](pancanApp.png)
+
+- `pancan_longname`: a helper for generating the long table names
+using a hint that will be processed by `agrep`:
+```{r lklo}
+pancan_longname("rnaseq")
+```
+
+- `pancan_BQ`: a function that will generate a BigQueryConnection
+instance provided billing code and Google authentication succeed.
 
 
 ## TARGET
@@ -405,6 +534,12 @@ cbind(select(org.Hs.eg.db, keys=rec, columns="SYMBOL"), n=as.numeric(tab))
 }
 ```
 
-We could abstract from this process a function that takes perturbagen classes
+We can abstract from this process a function that takes perturbagen classes
 and cell lines to deliver collections of LINCS signatures of genes considered
 to produce transcriptional activities of certain kinds.
+
+# Curated single cell expression data from cancer studies
+
+# Summary
+
+`BiocOncoTK`
