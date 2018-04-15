@@ -54,9 +54,13 @@ data from public archives and portals.  Key resource centers of interest include
 components available through [ISB/BigQuery](http://isb-cancer-genomics-cloud.readthedocs.io/en/latest/sections/TCGA-images.html)
     - [TCRN](https://cancerdatanetwork.org/): the TIES (Text Information Extraction System) Cancer Research Network -- we'll have to learn more about [JWT with httr](https://cran.r-project.org/web/packages/jose/vignettes/jwt.html) before progressing with this
     - [CONQUER](http://imlspenticton.uzh.ch:3838/conquer/), an archive of uniformly processed __single-cell RNA-seq__ datasets, a number of which related to cancer.  We have 'curated' CONQUER's version of the GBM
-single cell study of [Patel et al. 2014](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4123637/)
-in the [patelGBMSC package](https://github.com/vjcitn/patelGBMSC), with the large data component
-in an AWS S3 bucket.
+single cell study of [Patel et al. 2014](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4123637/), with the large data component
+in an AWS S3 bucket.  Below we indicate how to retrieve the Patel data
+for local computation.  A larger, more recent single
+cell transcriptomics experiment in GBM is that of 
+[Darmanis et al. 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5810554/).
+We curated the CONQUER representation of this experiment in a public HDF Object Store
+and describe how to use it below.
 - __Remote analysis support__ to "move the computation to the data".  Bridging [Google Cloud Datalab](https://cloud.google.com/datalab/) to the ISB TCGA and CCLE images is a first target.
 - __Social coding practice__: at present, users and developers should use the [issue tracker](https://github.com/vjcitn/BiocOncoTK/issues)
 at the [BiocOncoTK github repository](https://github.com/vjcitn/BiocOncoTK) to comment, critique, and propose new approaches.
@@ -76,7 +80,7 @@ library(ontologyPlot)
 oto = getOncotreeOnto()
 glioTag = names(grep("Glioblastoma$", oto$name, value=TRUE))
 st = siblings_TAG(glioTag, oto, justSibs=FALSE)
-onto_plot(oto, st@ontoTags, fontsize=50)
+onto_plot(oto, slot(st, "ontoTags"), fontsize=50)
 ```
 
 # Resource interfaces
@@ -429,9 +433,9 @@ profile.
 ```{r drrr}
 responsiveness = function (x, f) 
 {
-    r = sapply(x@traces, function(x) f(x@DRProfiles[[1]]@responses))
-    data.frame(Cell_line_primary_name = x@cell_lines, resp = r, 
-        drug = x@drug, dataset = x@dataset)
+    r = sapply(slot(x, "traces"), function(x) f(slot(slot(x,"DRProfiles")[[1]],"responses")))
+    data.frame(Cell_line_primary_name = slot(x,"cell_lines"), resp = r, 
+        drug = slot(x,"drug"), dataset = x@dataset)
 }
 ```
 
@@ -540,6 +544,51 @@ to produce transcriptional activities of certain kinds.
 
 # Curated single cell expression data from cancer studies
 
+In this section we illustrate different modalities for
+acquiring and working with single cell transcriptomics data,
+after processing by the CONQUER workflow.
+
+## Patel 2014
+
+The Patel et al. experiment assayed 864 cells.
+A standard in-memory representation is straightforward.
+The curated SummarizedExperiment is distributed in an AWS S3
+bucket sponsored by the Bioconductor Foundation.  The `loadPatel`
+function retrieves this and places it in a `r Biocpkg("BiocFileCache")
+instance.
+
+```{r trylop}
+patelSE = loadPatel() # uses BiocFileCache
+patelSE
+assay(patelSE[1:4,1:3]) # in memory
+```
+
+Exploratory analysis of this dataset is described in the companion vignette
+on single cell transcriptomics for GBM.
+
+## Darmanis 2017
+
+The Darmanis et al. experiment assayed over 3500 cells.  The
+CONQUER compressed RDS representation of all the data is about
+4 GB on disk.  The gene level quantifications and sample-level data
+were manually extracted from this archive.  The gene level quantifications
+in the `count_lstpm` form were then loaded into a public HDF object store
+sponsored by John Readey.  These data will persist in this format for some time; a
+Bioconductor-sponsored representation will be introduced as soon as possible.
+
+```{r lkdar}
+darmSE = BiocOncoTK::darmGBMcls  # count_lstpm from CONQUER
+darmSE
+assay(darmSE)  # out of memory
+```
+
 # Summary
 
-`BiocOncoTK`
+`BiocOncoTK` is a result of work carried out under NCI ITCR U01 "Accelerating
+cancer genomics with cloud-scale Bioconductor".  This package illustrates
+several Bioconductor-based representations of cancer data and metadata.
+Some of the resources, such as the PanCancer atlas, CCLE, and high-resolution
+single-cell transcriptomics studies are sufficiently large that cloud-oriented
+representation and analysis may be cost-effective.  As this package matures,
+additional resources will be highlighted, with particular attention to
+integration processes.
