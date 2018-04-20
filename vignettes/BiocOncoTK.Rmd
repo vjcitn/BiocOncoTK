@@ -131,6 +131,8 @@ colData names(746): bcr_patient_uuid bcr_patient_barcode ...
   bilirubin_upper_limit days_to_last_known_alive
 ```
 
+### Subsetting to normal
+
 To shift attention to the normal tissue samples provided, use
 ```{r lknor,eval=FALSE}
  BRCA_mir_nor = restfulSE::pancan_SE(pcbq, assaySampleTypeCode="NT")
@@ -160,6 +162,26 @@ function (bqcon, colDataTableName = "clinical_PANCAN_patient_with_followup",
     tumorFieldName = "Study", tumorFieldValue = "BRCA", assayValueFieldName = "miRNAexpr") 
 NULL
 -->
+
+### Shifting focus to another tissue/assay
+
+You need to know what type of sample has been assayed for
+the tumor type of interest.
+
+Here is how you find the candidates.
+```{r dotab, eval=FALSE}
+bqcon %>% tbl(pancan_longname("rnaseq")) %>% filter(Study=="GBM") %>% 
+   group_by(SampleTypeLetterCode) %>% summarise(n=n())
+```
+
+To get RNA-seq on recurrent GBM samples:
+```{r lkgbm, eval=FALSE}
+pancan_SE(bqcon, colDFilterValue="GBM", tumorFieldValue="GBM", 
+  assayDataTableName=pancan_longname("rnaseq"), 
+  assaySampleTypeCode="TR", assayFeatureName="Symbol", 
+  assayValueFieldName="normalized_count")
+```
+
 
 
 ### Multiassay experiments per tumor
