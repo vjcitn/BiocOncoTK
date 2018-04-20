@@ -175,7 +175,7 @@ bqcon %>% tbl(pancan_longname("rnaseq")) %>% filter(Study=="GBM") %>%
 ```
 
 To get RNA-seq on recurrent GBM samples:
-```{r lkgbm, eval=FALSE}
+```{r lkgbmr, eval=FALSE}
 pancan_SE(bqcon, colDFilterValue="GBM", tumorFieldValue="GBM", 
   assayDataTableName=pancan_longname("rnaseq"), 
   assaySampleTypeCode="TR", assayFeatureName="Symbol", 
