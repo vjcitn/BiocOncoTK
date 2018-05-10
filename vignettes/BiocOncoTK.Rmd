@@ -580,9 +580,11 @@ function retrieves this and places it in a `r Biocpkg("BiocFileCache")
 instance.
 
 ```{r trylop}
-patelSE = loadPatel() # uses BiocFileCache
-patelSE
-assay(patelSE[1:4,1:3]) # in memory
+if (interactive()) {
+ patelSE = loadPatel() # uses BiocFileCache
+ patelSE
+ assay(patelSE[1:4,1:3]) # in memory
+}
 ```
 
 Exploratory analysis of this dataset is described in the companion vignette
