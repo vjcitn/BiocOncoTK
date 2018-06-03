@@ -223,7 +223,7 @@ geneVecToOPInputByStudy = function(bq, genevec, studytag="LUAD") {
 #' if (interactive()) {
 #'  bcode = Sys.getenv("CGC_BILLING")
 #'  if (nchar(bcode)>0) {
-#'   con <- DBI::dbConnect(bigrquery::dbi_driver(), project = "isb-cgc", 
+#'   con <- DBI::dbConnect(bigrquery::bigquery(), project = "isb-cgc", 
 #'        dataset = "tcga_201607_beta", billing = bcode)
 #'   oncoPrintISB(con)
 #'  }

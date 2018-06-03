@@ -163,6 +163,15 @@ function (bqcon, colDataTableName = "clinical_PANCAN_patient_with_followup",
 NULL
 -->
 
+<!--
+tumNorSet = function(bq, code="PRAD", assayDataTableName=pancan_longname("rnaseq"),
+     assayValueFieldName="normalized_count", assayFeatureName="Entrez") {
+ lapply(c("TP", "NT"), function(x)
+   pancan_SE(bq, colDFilterValue=code, assayDataTableName=assayDataTableName, assaySampleTypeCode=x,
+    tumorFieldValue=code, assayValueFieldName=assayValueFieldName, assayFeatureName=assayFeatureName))
+}
+-->
+
 ### Shifting focus to another tissue/assay
 
 You need to know what type of sample has been assayed for
@@ -285,7 +294,7 @@ RNA-seq table.
 ```{r lktarg, message=FALSE,eval=FALSE}
 billco = Sys.getenv("CGC_BILLING")
 if (nchar(billco)>0) {
-  con = DBI::dbConnect(bigrquery::dbi_driver(), project="isb-cgc",
+  con = DBI::dbConnect(bigrquery::bigquery(), project="isb-cgc",
      dataset="TARGET_hg38_data_v0", billing=billco)
   DBI::dbListTables(con)
   con %>% tbl("RNAseq_Gene_Expression") %>% glimpse()
@@ -347,7 +356,7 @@ Here is a listing of all tables:
 ```{r lkccle2, message=FALSE, eval=FALSE}
 billco = Sys.getenv("CGC_BILLING")
 if (nchar(billco)>0) {
-  con = DBI::dbConnect(bigrquery::dbi_driver(), project="isb-cgc",
+  con = DBI::dbConnect(bigrquery::bigquery(), project="isb-cgc",
      dataset="ccle_201602_alpha", billing=billco)
   DBI::dbListTables(con)
 }

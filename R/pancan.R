@@ -9,7 +9,7 @@
 pancan_BQ = function (dataset="Annotated", 
               billing=Sys.getenv("CGC_BILLING")) 
 {
-    con <- DBI::dbConnect(bigrquery::dbi_driver(), project = "pancancer-atlas", 
+    con <- DBI::dbConnect(bigrquery::bigquery(), project = "pancancer-atlas", 
         dataset = dataset, billing = billing)
     con
 }
@@ -107,4 +107,26 @@ pancan_app = function(dataset="Annotated", nrecs=5) {
 pancan_longname  = function(guess, ...) 
   agrep(guess, BiocOncoTK::annotTabs, value=TRUE,
     ignore.case=TRUE, ...)
+
+#' create list with SEs for tumor and normal for a tumor/assay pairing
+#' @param bq a BigQuery connection
+#' @param code character(1) a TCGA tumor code, defaults to "PRAD" for prostate tumor
+#' @param assayDataTableName character(1) name of table in BigQuery
+#' @param assayValueFieldName character(1) field from which assay quantifications are retrieved
+#' @param assayFeatureName character(1) field from which assay feature names are retrieved
+#' @examples
+#' if (interactive()) {
+#'  bqcon = try(pancan_BQ())
+#'  if (!inherits(bqcon, "try-error")) {
+#'    tn = tumNorSet(bqcon)
+#'    tn
+#'  }
+#' }
+#' @export
+tumNorSet = function(bq, code="PRAD", assayDataTableName=pancan_longname("rnaseq"),
+     assayValueFieldName="normalized_count", assayFeatureName="Entrez") {
+ lapply(c("TP", "NT"), function(x)
+   pancan_SE(bq, colDFilterValue=code, assayDataTableName=assayDataTableName, assaySampleTypeCode=x,
+    tumorFieldValue=code, assayValueFieldName=assayValueFieldName, assayFeatureName=assayFeatureName))
+}
 
