@@ -255,6 +255,15 @@ different assays using `upsetSamples` in `r Biocpkg("MultiAssayExperiment")`.
 
 ![The upset diagram for brcaMAE, showing sample availability per assay.](brca4upset.png)
 
+## Non-coding variants
+
+The `ggMutDens`, `ggFeatDens` and `ggFeatureSegs` functions
+were created to support the image given here.  `ggMutDens`
+in particular depends upon a working BigQuery connection to
+the ISB-CGC PanCan-atlas project.
+
+![A view of non-coding mutation frequency in conjunction with TF binding site density and non-coding feature extents from Ensembl v75.](nonco3.png)
+
 ## Supporting infrastructure
 
 The API for `pancan_SE` in `r Biocpkg("restfulSE")` is complicated.
