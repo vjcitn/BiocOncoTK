@@ -21,6 +21,8 @@ be used to specify different groups for computing/colouring the density traces}
 
 \item{end}{numeric(1) end of interval}
 
+\item{binwidth.in}{numeric(1) for geom_freqpoly binwidth setting}
+
 \item{basicfilt}{a dplyr::filter operation, defaulting to select non-coding variants in mc3 MAF}
 
 \item{ylab.in}{character(1) label for y axis}
