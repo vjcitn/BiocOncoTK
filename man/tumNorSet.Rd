@@ -4,8 +4,10 @@
 \alias{tumNorSet}
 \title{create list with SEs for tumor and normal for a tumor/assay pairing}
 \usage{
-tumNorSet(bq, code = "PRAD", assayDataTableName = pancan_longname("rnaseq"),
-  assayValueFieldName = "normalized_count", assayFeatureName = "Entrez")
+tumNorSet(bq, code = "PRAD",
+  assayDataTableName = pancan_longname("rnaseq"),
+  assayValueFieldName = "normalized_count",
+  assayFeatureName = "Entrez")
 }
 \arguments{
 \item{bq}{a BigQuery connection}

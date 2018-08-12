@@ -4,8 +4,8 @@
 \alias{query_clue}
 \title{run the api.clue.io API to acquire information on LINCS experiments}
 \usage{
-query_clue(service = "profiles", filter = list(where = (list(pert_iname =
-  "sirolimus", cell_id = "MCF7", assay = "L1000"))),
+query_clue(service = "profiles", filter = list(where = (list(pert_iname
+  = "sirolimus", cell_id = "MCF7", assay = "L1000"))),
   key = Sys.getenv("CLUE_KEY"))
 }
 \arguments{

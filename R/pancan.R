@@ -1,3 +1,6 @@
+##SELECT ParticipantBarcode, ID, Study, miRNAexpr FROM [pancancer-atlas:Annotated.pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot] 
+## where participantBarcode="TCGA-3C-AAAU" and ID="hsa-miR-9-3p" LIMIT 10
+## answer is 18.275887
 #' provide bigrquery connection to pancancer Annotated datasets
 #' @import bigrquery
 #' @param dataset character(1) dataset name

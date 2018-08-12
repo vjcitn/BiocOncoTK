@@ -1,4 +1,6 @@
 #' create a GRanges from the MC3 mutation data
+#' @import ggplot2 
+#' @import IRanges
 #' @param bq bigrquery BigQueryConnection instance
 #' @param basicfilt a dplyr::filter instance or NULL to convert entire MAF
 #' @param maxnrec numeric(1) used with dplyr::as.data.frame en route to GRanges
@@ -48,6 +50,7 @@ mc3toGR = function (bq, basicfilt= function(data) dplyr::filter(data,Consequence
 #' @return instance of ggplot
 #' @examples
 #' if (interactive()) {
+#'  if (!requireNamespace("ggplot2")) stop("install ggplot2 to run this function")
 #'  bq = try(pancan_BQ())
 #'  if (!inherits(bq, "try-error")) {
 #'   ggMutDens(bq)
@@ -64,8 +67,9 @@ ggMutDens = function(bq,
    dplyr::filter(Chromosome==chrname) %>% as.data.frame(n=maxnrec) 
  toptum = names(sort(table(onchr$project_short_name), decreasing=TRUE)[seq_len(project_volume)])
  fonchr = dplyr::filter(onchr, project_short_name %in% toptum)
- ggplot2::ggplot( fonchr, aes(x=Start_Position, stat(density), colour=project_short_name)) +
-    geom_freqpoly(binwidth=binwidth) + xlim(c(start, end)) + xlab(xlab.in) + ylab("mutation\ndensity")
+ ggplot2::ggplot( fonchr, ggplot2::aes(x=Start_Position, ggplot2::stat(density), colour=project_short_name)) +
+    ggplot2::geom_freqpoly(binwidth=binwidth) + ggplot2::xlim(c(start, end)) + 
+       ggplot2::xlab(xlab.in) + ggplot2::ylab("mutation\ndensity")
 }
 
 #' create ggplot for density of starts of a GRanges in an interval
@@ -91,7 +95,7 @@ ggFeatDens = function(gr, mcolvbl,
  restr = GenomicRanges::GRanges(chrname, IRanges::IRanges(start,end))
  nearGR = subsetByOverlaps(gr, restr)
  myd = data.frame(tfstart=GenomicRanges::start(nearGR), class=mcols(nearGR)[[mcolvbl]])
- ggplot(myd, aes(x=tfstart, stat(density), colour=class)) + geom_freqpoly(binwidth=binwidth.in) + 
+ ggplot(myd, ggplot2::aes(x=tfstart, stat(density), colour=class)) + geom_freqpoly(binwidth=binwidth.in) + 
        xlim(c(start, end)) + ylab(ylab.in)
 }
 

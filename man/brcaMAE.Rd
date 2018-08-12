@@ -34,8 +34,8 @@ BRCA_meth = pancan_SE(pcbq,
 library(MultiAssayExperiment)
 library(dplyr)
 library(magrittr)
-clinBRCA = pcbq %>% tbl(pancan_longname("clinical")) %>%
-  filter(acronym=="BRCA") %>% as.data.frame() 
+clinBRCA = pcbq \%>\% tbl(pancan_longname("clinical")) \%>\%
+  filter(acronym=="BRCA") \%>\% as.data.frame() 
 rownames(clinBRCA) = clinBRCA[,2]
 clinDF = DataFrame(clinBRCA)
 library(MultiAssayExperiment)
