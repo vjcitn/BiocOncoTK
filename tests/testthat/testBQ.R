@@ -1,7 +1,6 @@
 library(testthat)
 library(BiocOncoTK)
 library(reshape2)
-options(httr_oob_default=TRUE)
 
 doit = function() {
 myq = "SELECT ParticipantBarcode, Study, ID, Beta, sampletype, sampletypelettercode FROM 
