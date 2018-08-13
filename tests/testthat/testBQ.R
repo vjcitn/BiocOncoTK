@@ -1,7 +1,9 @@
+library(testthat)
+library(BiocOncoTK)
+library(reshape2)
+options(httr_oob_default=TRUE)
 
-context("buildPancanSE compared to dbGetQuery")
-
-test_that("meth450k data concordant between SE and BQ", {
+doit = function() {
 myq = "SELECT ParticipantBarcode, Study, ID, Beta, sampletype, sampletypelettercode FROM 
 `pancancer-atlas.Annotated.jhu_usc_edu_PANCAN_HumanMethylation450_betaValue_whitelisted_annot` 
 where Study = 'BLCA' and (ID = 'cg00000029' or ID = 'rs9839873') and 
@@ -18,6 +20,12 @@ if (nchar(Sys.getenv("CGC_BILLING"))==0) skip("CGC_BILLING not set")
 bqdf = dcast(data=bqdat, formula=ID~ParticipantBarcode, value.var="Beta")
 bqmat = data.matrix(bqdf[,-1])
 rownames(bqmat) = bqdf[,1]
-expect_true(all.equal(bqmat[rownames(semat), colnames(semat)], semat))
+list(bqm=bqmat[rownames(semat), colnames(semat)], sem=semat)
+}
+
+context("buildPancanSE compared to dbGetQuery")
+test_that("meth450k data concordant between SE and BQ", {
+dd = doit()
+expect_true(all.equal(dd$bqm, dd$sem))
 })
 
