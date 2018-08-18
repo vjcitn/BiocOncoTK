@@ -5,7 +5,8 @@
 \title{helper for SummarizedExperiment construction from pancan}
 \usage{
 buildPancanSE(bq, acronym = "BLCA", assay = "meth450k",
-  sampType = "TP", subjectIDName = "ParticipantBarcode")
+  sampType = "TP", subjectIDName = "ParticipantBarcode",
+  seTransform = force)
 }
 \arguments{
 \item{bq}{instance of BigQueryConnection for pancancer-atlas.Annotated Dataset}
@@ -20,6 +21,8 @@ e.g., 'TP' for Primary solid Tumor samples,
 or 'TB' for peripheral blood sample from primary blood derived cancer}
 
 \item{subjectIDName}{character(1) field name for subject identifier}
+
+\item{seTransform}{a function that accepts a SummarizedExperiment and returns a SummarizedExperiment; useful for feature name remapping, defaults to force (does nothing)}
 }
 \value{
 SummarizedExperiment
