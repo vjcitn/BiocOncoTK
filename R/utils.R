@@ -1,3 +1,5 @@
+#' @importFrom SummarizedExperiment colData
+#
 .load_mock = function(stub) {
  get(load(system.file(sprintf("mocks/%s.rda", stub), package="BiocOncoTK")))
 }
@@ -23,4 +25,23 @@ load_NRAS_AHR = function() {
 #' @export
 load_nrasdf = function() {
  .load_mock("nrasdf")
+}
+
+#' bind MSI data to a SummarizedExperiment
+#' @param se SummarizedExperiment instance
+#' @return SummarizedExperiment instance with expanded colData,
+#' samples limited to those with microsatellite instability values
+#' @examples
+#' bindMSI
+#' @export
+bindMSI = function(se) {
+ inpat = colnames(se)
+ msi = BiocOncoTK::fireMSI
+ msipat = msi$patient_barcode
+ ok = intersect(inpat, msipat)
+ if (length(ok)==0) stop("no patients in SE found in fireMSI")
+ se = se[, ok]
+ rownames(msi) = msi$patient_barcode
+ se$msiTest = as.character(msi[colnames(se),"msiTest"])
+ se
 }

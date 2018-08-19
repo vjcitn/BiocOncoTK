@@ -111,3 +111,11 @@
 #' @examples
 #' BiocOncoTK::darmGBMcls
 "darmGBMcls"
+
+#' microsatellite instability data in TCGA, collected from curatedTCGAData
+#' @docType data
+#' @format DataFrame
+#' @source firehose via curatedTCGAData; see metadata(BiocOncoTK::fireMSI)
+#' @examples
+#' str(S4Vectors::metadata(BiocOncoTK::fireMSI))
+"fireMSI"

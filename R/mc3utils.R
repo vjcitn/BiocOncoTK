@@ -1,6 +1,7 @@
 #' create a GRanges from the MC3 mutation data
 #' @import ggplot2 
 #' @import IRanges
+#' @importFrom stats density
 #' @param bq bigrquery BigQueryConnection instance
 #' @param basicfilt a dplyr::filter instance or NULL to convert entire MAF
 #' @param maxnrec numeric(1) used with dplyr::as.data.frame en route to GRanges
