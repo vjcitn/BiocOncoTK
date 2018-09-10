@@ -11,10 +11,21 @@ bindMSI(se)
 }
 \value{
 SummarizedExperiment instance with expanded colData,
-samples limited to those with microsatellite instability values
+samples limited to those with microsatellite instability values.
 }
 \description{
 bind MSI data to a SummarizedExperiment
+}
+\note{
+This function adds the column \code{msiTest} to
+\code{colData(se)}.  The contents of the column are given by
+\code{\link{fireMSI}}.  Samples in \code{se}
+that do not correspond to a row of \code{\link{fireMSI}}
+are dropped.  If there is already a column named \code{msiTest}
+in \code{colData(se)}, it is replaced and samples are filtered
+as described, and a message is given.  If none of the
+samples in \code{se} have rows in \code{\link{fireMSI}},
+an error is thrown.
 }
 \examples{
 bindMSI
