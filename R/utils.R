@@ -29,6 +29,7 @@ load_nrasdf = function() {
 
 #' bind MSI data to a SummarizedExperiment
 #' @param se SummarizedExperiment instance
+#' @param onlyHL logical(1) if TRUE, retain only msi-h, msi-l records
 #' @return SummarizedExperiment instance with expanded colData,
 #' samples limited to those with microsatellite instability values.
 #' @note This function adds the column \code{msiTest} to
@@ -43,7 +44,7 @@ load_nrasdf = function() {
 #' @examples
 #' bindMSI
 #' @export
-bindMSI = function(se) {
+bindMSI = function(se, onlyHL=TRUE) {
  inpat = colnames(se)
  if ("msiTest" %in% names(colData(se)))
    message("'msiTest' found among colData columns, will replace.")
@@ -54,5 +55,6 @@ bindMSI = function(se) {
  se = se[, ok]
  rownames(msi) = msi$patient_barcode
  se$msiTest = as.character(msi[colnames(se),"msiTest"])
+ if (onlyHL) se = se[, which(se$msiTest %in% c("msi-h", "msi-l"))]
  se
 }

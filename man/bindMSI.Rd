@@ -4,10 +4,12 @@
 \alias{bindMSI}
 \title{bind MSI data to a SummarizedExperiment}
 \usage{
-bindMSI(se)
+bindMSI(se, onlyHL = TRUE)
 }
 \arguments{
 \item{se}{SummarizedExperiment instance}
+
+\item{onlyHL}{logical(1) if TRUE, retain only msi-h, msi-l records}
 }
 \value{
 SummarizedExperiment instance with expanded colData,
