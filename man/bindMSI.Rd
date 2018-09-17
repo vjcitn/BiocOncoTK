@@ -4,16 +4,21 @@
 \alias{bindMSI}
 \title{bind MSI data to a SummarizedExperiment}
 \usage{
-bindMSI(se, onlyHL = TRUE)
+bindMSI(se, useDing = TRUE, onlyHL = TRUE)
 }
 \arguments{
 \item{se}{SummarizedExperiment instance}
 
-\item{onlyHL}{logical(1) if TRUE, retain only msi-h, msi-l records}
+\item{useDing}{logical(1) if TRUE, use MSIsensor outputs from Ding et al. Cell 2018, otherwise use firehose labelings msi-h,msi-l}
+
+\item{onlyHL}{logical(1) if TRUE, retain only msi-h, msi-l records;
+ignored if useDing is TRUE}
 }
 \value{
 SummarizedExperiment instance with expanded colData,
 samples limited to those with microsatellite instability values.
+The additional variable is called 'msiTest' and is numerical
+if useDing is TRUE and is character (msi-{h,l,s}) otherwise.
 }
 \description{
 bind MSI data to a SummarizedExperiment

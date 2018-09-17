@@ -261,46 +261,46 @@ different assays using `upsetSamples` in `r Biocpkg("MultiAssayExperiment")`.
 The following code produces figure 1 of the restfulSE
 paper.
 
-```{r doinfpan,eval=FALSE}
-if (interactive() & nchar(Sys.getenv("CGC_BILLING")) > 0) {
-infilGenes = c(`PD-L1`="CD274", `PD-L2`="PDCD1LG2", CD8A="CD8A")
-tumcodes = c("COAD", "STAD", "UCEC")
-combs = expand.grid(tumcode=tumcodes, ali=names(infilGenes),
-   stringsAsFactors=FALSE)
-combs$sym = infilGenes[combs$ali]
 
-bq = pancan_BQ()
-#stad = bindMSI(buildPancanSE(bq, "STAD", assay="RNASeqv2"))
-#stad = replaceRownames(stad)
-exprByMSI = function(bq, tumcode, genesym, alias) {
- if (missing(alias)) alias=genesym
- ex = bindMSI(buildPancanSE(bq, tumcode, assay="RNASeqv2"))
- ex = replaceRownames(ex)
- data.frame(
-  patient_barcode=colnames(ex),
-  acronym=tumcode,
-  symbol = genesym,
-  alias = alias,
-  log2ex=log2(as.numeric(SummarizedExperiment::assay(ex[genesym,]))+1),
-  msicode = ex$msiTest)
-}
-allshow = lapply(1:nrow(combs), function(x) exprByMSI(bq, combs$tumcode[x],
-   combs$sym[x], combs$ali[x]))
+```{r dofig1,eval=FALSE}
+library(BiocOncoTK)
 
-rr = do.call(rbind, allshow)
+ infilGenes = c(`PD-L1`="CD274", `PD-L2`="PDCD1LG2", CD8A="CD8A")
+ tumcodes = c("COAD", "STAD", "UCEC")
+ combs = expand.grid(tumcode=tumcodes, ali=names(infilGenes),
+    stringsAsFactors=FALSE)
+ combs$sym = infilGenes[combs$ali]
 
-library(ggplot2)
-png(file="microsatpan.png")
-ggplot(subset(rr, msicode %in% c("msi-h", "msi-l")), 
-   aes(msicode, log2ex)) + geom_boxplot() + 
-   facet_grid(acronym~alias) + 
-   ylab("log2(normalized expr. + 1)") + 
-   xlab("microsatellite instability code")
-dev.off()
-}
+ bq = pancan_BQ()
+ exprByMSI = function(bq, tumcode, genesym, alias) {
+  print(tumcode)
+  if (missing(alias)) alias=genesym
+  ex = bindMSI(buildPancanSE(bq, tumcode, assay="RNASeqv2"))
+  ex = replaceRownames(ex)
+  data.frame(
+   patient_barcode=colnames(ex),
+   acronym=tumcode,
+   symbol = genesym,
+   alias = alias,
+   log2ex=log2(as.numeric(SummarizedExperiment::assay(ex[genesym,]))+1),
+   msicode = ifelse(ex$msiTest >= 4, ">=4", "<4"))
+ }
+ allshow = lapply(1:nrow(combs), function(x) exprByMSI(bq, combs$tumcode[x],
+    combs$sym[x], combs$ali[x]))
+ 
+ rr = do.call(rbind, allshow)
+ 
+ library(ggplot2)
+ png(file="microsatpan2.png")
+ ggplot(rr,
+    aes(msicode, log2ex)) + geom_boxplot() +
+    facet_grid(acronym~alias) +
+    ylab("log2(normalized expr. + 1)") +
+    xlab("microsatellite instability score")
+ dev.off()
 ```
 
-![](microsatpan.png)
+![](microsatpan2.png)
 
 
 ## Non-coding variants
