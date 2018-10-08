@@ -6,7 +6,7 @@
 \usage{
 buildPancanSE(bq, acronym = "BLCA", assay = "meth450k",
   sampType = "TP", subjectIDName = "ParticipantBarcode",
-  seTransform = force)
+  seTransform = force, bindMethRowranges = TRUE)
 }
 \arguments{
 \item{bq}{instance of BigQueryConnection for pancancer-atlas.Annotated Dataset}
@@ -23,9 +23,17 @@ or 'TB' for peripheral blood sample from primary blood derived cancer}
 \item{subjectIDName}{character(1) field name for subject identifier}
 
 \item{seTransform}{a function that accepts a SummarizedExperiment and returns a SummarizedExperiment; useful for feature name remapping, defaults to force (does nothing)}
+
+\item{bindMethRowranges}{logical(1) if true and assay is meth27k
+or meth450k, annotation from FDb.InfiniumMethylation.hg19
+and EnsDb.Hsapiens.v75 is obtained for available features
+and bound into the rowRanges component of returned object}
 }
 \value{
-SummarizedExperiment
+SummarizedExperiment, with metadata on acronym, assay,
+and sampleType propagated; if the assay is a methylation
+assay and bindMethRowranges is TRUE, a RangedSummarizedExperiment
+is returned.
 }
 \description{
 helper for SummarizedExperiment construction from pancan
@@ -33,7 +41,8 @@ helper for SummarizedExperiment construction from pancan
 \note{
 Note that pancancer-atlas is distinguished from TCGA by the presence of more
 sample types.  The default type is 'TP' for primary solid tumor.
-Codes and their interpretations are available in BiocOncoTK::pancan_sampTypeMap.
+Codes and their interpretations are available in 
+BiocOncoTK::pancan_sampTypeMap.
 }
 \examples{
 if (interactive() && Biobase::testBioCConnection()) {

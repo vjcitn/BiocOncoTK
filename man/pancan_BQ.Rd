@@ -4,12 +4,15 @@
 \alias{pancan_BQ}
 \title{provide bigrquery connection to pancancer Annotated datasets}
 \usage{
-pancan_BQ(dataset = "Annotated", billing = Sys.getenv("CGC_BILLING"))
+pancan_BQ(dataset = "Annotated", billing = Sys.getenv("CGC_BILLING"),
+  ...)
 }
 \arguments{
 \item{dataset}{character(1) dataset name}
 
 \item{billing}{character(1) Google cloud platform billing code; authentication will be attempted when using the resulting connection}
+
+\item{\dots}{passed to \code{\link{dbConnect}}, for example, quiet=TRUE}
 }
 \value{
 BigQueryConnection instance

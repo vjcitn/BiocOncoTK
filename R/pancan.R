@@ -2,18 +2,19 @@
 ## where participantBarcode="TCGA-3C-AAAU" and ID="hsa-miR-9-3p" LIMIT 10
 ## answer is 18.275887
 #' provide bigrquery connection to pancancer Annotated datasets
-#' @import bigrquery
+#' @import bigrquery DBI
 #' @param dataset character(1) dataset name
 #' @param billing character(1) Google cloud platform billing code; authentication will be attempted when using the resulting connection
+#' @param \dots passed to \code{\link{dbConnect}}, for example, quiet=TRUE
 #' @return BigQueryConnection instance
 #' @examples
 #' pancan_BQ
 #' @export
 pancan_BQ = function (dataset="Annotated", 
-              billing=Sys.getenv("CGC_BILLING")) 
+              billing=Sys.getenv("CGC_BILLING"), ...) 
 {
     con <- DBI::dbConnect(bigrquery::bigquery(), project = "pancancer-atlas", 
-        dataset = dataset, billing = billing)
+        dataset = dataset, billing = billing, ...)
     con
 }
 

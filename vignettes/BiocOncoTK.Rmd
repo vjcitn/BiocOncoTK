@@ -259,7 +259,7 @@ different assays using `upsetSamples` in `r Biocpkg("MultiAssayExperiment")`.
 ### Reassessing immune infiltrate signatures in relation to microsatellite instability
 
 The following code produces figure 1 of the restfulSE
-paper.
+supplement.
 
 
 ```{r dofig1,eval=FALSE}
