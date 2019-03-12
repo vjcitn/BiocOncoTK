@@ -6,7 +6,8 @@
 \usage{
 buildPancanSE(bq, acronym = "BLCA", assay = "meth450k",
   sampType = "TP", subjectIDName = "ParticipantBarcode",
-  seTransform = force, bindMethRowranges = TRUE)
+  seTransform = force, bindMethRowranges = TRUE,
+  featIDMap = featIDMapper())
 }
 \arguments{
 \item{bq}{instance of BigQueryConnection for pancancer-atlas.Annotated Dataset}
@@ -24,7 +25,10 @@ or 'TB' for peripheral blood sample from primary blood derived cancer}
 
 \item{seTransform}{a function that accepts a SummarizedExperiment and returns a SummarizedExperiment; useful for feature name remapping, defaults to force (does nothing)}
 
-\item{bindMethRowranges}{logical(1) if true and assay is meth27k
+\item{bindMethRowranges}{logical(1) if true and assay is meth27k}
+
+\item{featIDMap}{a named character() vector defining, for each
+assay type, what field should be used to label features in rownames.
 or meth450k, annotation from FDb.InfiniumMethylation.hg19
 and EnsDb.Hsapiens.v75 is obtained for available features
 and bound into the rowRanges component of returned object}

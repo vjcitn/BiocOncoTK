@@ -67,7 +67,8 @@ bindMSI = function(se, useDing=TRUE, onlyHL=TRUE) {
  ok = intersect(inpat, msipat)
  if (length(ok)==0) stop("no patients in SE found in MSI resource")
  se = se[, ok]
- se$msiTest = as.character(msi[colnames(se),msivbl])
+ se$msiTest = msi[colnames(se),msivbl]
+ if (!useDing) se$msiTest = as.character(se$msiTest)
  if (!useDing && onlyHL) se = se[, which(se$msiTest %in% c("msi-h", "msi-l"))]
  se
 }

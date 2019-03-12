@@ -1,5 +1,25 @@
-# helpers not exported at present
-featIDMap = function() {
+#' @import magrittr 
+#' @export
+magrittr::`%>%`
+#' @importFrom dplyr tbl tbl_df select filter summarise n group_by src_tbls tbl_vars select_ group_by_
+#' @export
+dplyr::`filter`
+#' @export
+dplyr::`tbl`
+#' @export
+dplyr::`select`
+#' define assay-specific feature names in a character vector
+#' @import bigrquery
+#' @export dbListTables
+#' @note We may want to use Symbol instead of Entrez when retrieving
+#' expression data.  The value of this function is supplied as a
+#' default for \code{\link{buildPancanSE}}'s featIDMap parameter, 
+#' and alternatives can
+#' be selected by passing similarly named vectors in featIDMap.
+#' @examples
+#' featIDMapper()
+#' @export
+featIDMapper = function() {
  c(RNASeqv2="Entrez",
    RPPA_clean="Protein",
    meth27k="ID",
@@ -26,6 +46,8 @@ featValMap=function() {
 #' @param subjectIDName character(1) field name for subject identifier
 #' @param seTransform a function that accepts a SummarizedExperiment and returns a SummarizedExperiment; useful for feature name remapping, defaults to force (does nothing)
 #' @param bindMethRowranges logical(1) if true and assay is meth27k
+#' @param featIDMap a named character() vector defining, for each
+#' assay type, what field should be used to label features in rownames.
 #' or meth450k, annotation from FDb.InfiniumMethylation.hg19
 #' and EnsDb.Hsapiens.v75 is obtained for available features
 #' and bound into the rowRanges component of returned object
@@ -50,13 +72,14 @@ featValMap=function() {
 buildPancanSE = function(bq, acronym = 'BLCA',
   assay = 'meth450k', sampType = 'TP', 
   subjectIDName = "ParticipantBarcode", seTransform=force,
-  bindMethRowranges = TRUE) {
+  bindMethRowranges = TRUE, featIDMap=featIDMapper()) {
  if (!requireNamespace("restfulSE")) stop("install restfulSE to use this function")
  stopifnot (assay %in% names(BiocOncoTK::annotTabs) )
  stopifnot (is(bq, "BigQueryConnection"))
+ stopifnot (assay %in% names(featIDMap))
  ans = restfulSE::pancan_SE( bq, colDFilterValue = acronym,
      assayDataTableName = BiocOncoTK::annotTabs[ assay ],
-     assayFeatureName = featIDMap()[ assay ], assaySampleTypeCode = sampType,
+     assayFeatureName = featIDMap[ assay ], assaySampleTypeCode = sampType,
      subjectIDName = subjectIDName, 
      tumorFieldName = "Study", tumorFieldValue = acronym,
       assayValueFieldName = featValMap()[ assay ] )

@@ -57,16 +57,16 @@ pancan_app = function(dataset="Annotated", nrecs=5) {
  ui = fluidPage(
   sidebarLayout(
    sidebarPanel(
-    helpText(paste("BiocOncoTK pancan_app provides high-level view of",
+    helpText(h3(paste("BiocOncoTK pancan_app: High-level views of",
       "tables and records in the BigQuery pancan-atlas project of",
-      "April 2018.")),
+      "November 2018."))),
+    selectInput("table", "Select a table", tbls),
     helpText("See ", a(href="http://isb-cancer-genomics-cloud.readthedocs.io/en/latest/sections/PanCancer-Atlas-Mirror.html", "the ISB documentation on this project"), "for more details on the underlying data."),
     helpText(paste("Tab 'recs' presents a small number of records",
       "from the selected table; tab 'fullnames' shows the internal",
       "name of the table, which includes some relevant metadata.")),
     helpText("Tab allvbls is a searchable list of table fields"),
-    selectInput("table", "Select a table", tbls),
-    width=2
+    width=3
    ),
    mainPanel(
     tabsetPanel(
