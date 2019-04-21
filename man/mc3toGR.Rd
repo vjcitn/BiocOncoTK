@@ -21,5 +21,15 @@ a GRanges instance
 create a GRanges from the MC3 mutation data
 }
 \examples{
-mc3toGR
+if (interactive()) {
+  con = try(pancan_BQ()) # need CGC_BILLING set
+  if (!inherits(con, "try-error")) {
+     aut = as.character(1:22) # some records in BQ have missing Chromosome
+     chk = mc3toGR(con, basicfilt=function(data) dplyr::filter(data,
+          project_short_name=="TCGA-BRCA",
+          SYMBOL=="TP53", Chromosome \%in\% aut))
+     print(chk[,1:5]) # lots of mcol fields
+     table(chk$Variant_Classification)
+     }
+  }
 }

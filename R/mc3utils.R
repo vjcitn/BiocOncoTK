@@ -7,7 +7,17 @@
 #' @param maxnrec numeric(1) used with dplyr::as.data.frame en route to GRanges
 #' @return a GRanges instance
 #' @examples
-#' mc3toGR
+#' if (interactive()) {
+#'   con = try(pancan_BQ()) # need CGC_BILLING set
+#'   if (!inherits(con, "try-error")) {
+#'      aut = as.character(1:22) # some records in BQ have missing Chromosome
+#'      chk = mc3toGR(con, basicfilt=function(data) dplyr::filter(data,
+#'           project_short_name=="TCGA-BRCA",
+#'           SYMBOL=="TP53", Chromosome %in% aut))
+#'      print(chk[,1:5]) # lots of mcol fields
+#'      table(chk$Variant_Classification)
+#'      }
+#'   }
 #' @export
 mc3toGR = function (bq, basicfilt= function(data) dplyr::filter(data,Consequence=="non_coding_transcript_exon_variant"), maxnrec=1e5) {
     mc3 = bq %>% dplyr::tbl(pancan_longname("mc3_v0"))

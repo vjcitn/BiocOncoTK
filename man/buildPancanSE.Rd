@@ -14,7 +14,10 @@ buildPancanSE(bq, acronym = "BLCA", assay = "meth450k",
 
 \item{acronym}{character(1) 'cohort' label, e.g., 'BLCA'}
 
-\item{assay}{character(1) element from names(BiocOncoTK::annotTabs), e.g., 'meth450k'}
+\item{assay}{character(1) element from names(BiocOncoTK::annotTabs), e.g., 'meth450k'.
+If `assay == "mc3_MAF"` an error is thrown as the mutation data are
+inconsistently annotated; the message produced directs the user to
+`mc3toGR`.}
 
 \item{sampType}{character(1) element from 
 BiocOncoTK::pancan_sampTypeMap$"SampleTypeLetterCode", 

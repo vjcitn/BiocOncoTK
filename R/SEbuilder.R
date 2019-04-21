@@ -38,7 +38,10 @@ featValMap=function() {
 #' helper for SummarizedExperiment construction from pancan
 #' @param bq instance of BigQueryConnection for pancancer-atlas.Annotated Dataset
 #' @param acronym character(1) 'cohort' label, e.g., 'BLCA'
-#' @param assay character(1) element from names(BiocOncoTK::annotTabs), e.g., 'meth450k'
+#' @param assay character(1) element from names(BiocOncoTK::annotTabs), e.g., 'meth450k'.
+#' If `assay == "mc3_MAF"` an error is thrown as the mutation data are
+#' inconsistently annotated; the message produced directs the user to
+#' `mc3toGR`.
 #' @param sampType character(1) element from 
 #' BiocOncoTK::pancan_sampTypeMap$"SampleTypeLetterCode", 
 #' e.g., 'TP' for Primary solid Tumor samples,
@@ -74,6 +77,7 @@ buildPancanSE = function(bq, acronym = 'BLCA',
   subjectIDName = "ParticipantBarcode", seTransform=force,
   bindMethRowranges = TRUE, featIDMap=featIDMapper()) {
  if (!requireNamespace("restfulSE")) stop("install restfulSE to use this function")
+ if (assay == "mc3_MAF") stop("please use mc3toGR for mutation data")
  stopifnot (assay %in% names(BiocOncoTK::annotTabs) )
  stopifnot (is(bq, "BigQueryConnection"))
  stopifnot (assay %in% names(featIDMap))
