@@ -312,6 +312,22 @@ the ISB-CGC PanCan-atlas project.
 
 ![A view of non-coding mutation frequency in conjunction with TF binding site density and non-coding feature extents from Ensembl v75.](nonco3.png)
 
+The detailed code for this display is:
+```
+library(BiocOncoTK)
+library(AnnotationHub)
+ah = AnnotationHub()
+tc = ah[["AH5090"]]
+tc$name = "TF"
+tfplot = ggFeatDens(tc, mcolvbl="name")
+library(EnsDb.Hsapiens.v75)
+segplot=ggFeatureSegs()
+bq = pancan_BQ() # requires that CGC_BILLING is set
+mutplot = ggMutDens(bq)
+library(cowplot)
+plot_grid(mutplot, tfplot, segplot, align="v", nrow=3)
+```
+
 ## Supporting infrastructure
 
 The API for `pancan_SE` in `r Biocpkg("restfulSE")` is complicated.
