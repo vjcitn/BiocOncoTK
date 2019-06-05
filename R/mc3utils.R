@@ -78,9 +78,11 @@ ggMutDens = function(bq,
    dplyr::filter(Chromosome==chrname) %>% as.data.frame(n=maxnrec) 
  toptum = names(sort(table(onchr$project_short_name), decreasing=TRUE)[seq_len(project_volume)])
  fonchr = dplyr::filter(onchr, project_short_name %in% toptum)
- ggplot2::ggplot( fonchr, ggplot2::aes(x=Start_Position, ggplot2::stat(density), colour=project_short_name)) +
-    ggplot2::geom_freqpoly(binwidth=binwidth) + ggplot2::xlim(c(start, end)) + 
-       ggplot2::xlab(xlab.in) + ggplot2::ylab("mutation\ndensity")
+ ggplot2::ggplot( fonchr, ggplot2::aes(x=Start_Position, 
+    # ggplot2::stat(density), -- worked in 3.8, no more
+    colour=project_short_name)) +
+    ggplot2::geom_freqpoly(binwidth=binwidth, stat="bin") + ggplot2::xlim(c(start, end)) + 
+       ggplot2::xlab(xlab.in) + ggplot2::ylab("mutation\nfrequency")
 }
 
 #' create ggplot for density of starts of a GRanges in an interval

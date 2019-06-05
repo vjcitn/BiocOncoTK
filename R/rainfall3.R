@@ -29,7 +29,7 @@ kataColors = function ()
     names(cmap) = c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G")
     cmap
 }
-subt = function(ref, a1, a2) {
+subt.wrong = function(ref, a1, a2) {
         alt = ifelse(a1 != ref, a1, a2)
         tmp = ref
         needsw = which(alt %in% c("C", "T"))
@@ -37,6 +37,23 @@ subt = function(ref, a1, a2) {
         alt[needsw] = tmp[needsw]
         paste(ref, alt, sep = ">")
 }
+
+
+subt = function(ref, a1, a2) {
+#
+# given reference and two tumor alleles at point mutation site
+# produce a vector of substitution labels according to the
+# COSMIC convention (https://cancer.sanger.ac.uk/cosmic/signatures)
+#
+    alt = ifelse(a1 != ref, a1, a2) 
+    allm = paste(ref, alt, sep = ">")
+    keep = reco = c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G")
+    names(reco) = c("G>T", "G>C", "G>A", "A>T", "A>G",
+       "A>C")
+    names(keep) = keep
+    map2cosmic = c(reco,keep)
+    as.character(map2cosmic[allm])
+}   
 
 .rainfall.bq.df = function(bq, studytag="LUAD", VariantType="SNP", id="TCGA-05-4398", colmap=kataColors(),
   dropDupChg=TRUE) {
