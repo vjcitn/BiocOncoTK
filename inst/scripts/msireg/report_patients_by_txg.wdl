@@ -1,4 +1,3 @@
-version 1.0
 
 # report_patients_by_txg
 # defines task to perform on subordinate scatter

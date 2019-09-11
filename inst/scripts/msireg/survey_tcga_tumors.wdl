@@ -1,5 +1,3 @@
-version 1.0
-
 import "https://raw.githubusercontent.com/vjcitn/BiocOncoTK/master/inst/scripts/msireg/report_patients_by_txg.wdl" as sub
 
 # survey_tcga_tumors.wdl
