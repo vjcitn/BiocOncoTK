@@ -2,6 +2,8 @@
 # defines task to perform on subordinate scatter
 # (included in scatter over genes)
 
+version 1.0
+
 workflow report_patients_by_txg {
   Array[String] tumors
   String gene
