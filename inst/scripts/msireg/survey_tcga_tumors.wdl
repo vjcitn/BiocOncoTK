@@ -40,19 +40,19 @@ task agg {
     }   
 }
 
-workflow genes {
+workflow survey_genes {
   Array[String] genes # gets binding from 'inputs' json
   Array[String] tumors 
   scatter (g in genes) {
-   call sub.tumors {
+   call sub.survey_tumors {
     input: gene = g, tumors=tumors
     }
   }
-  scatter (f in tumors.csvs) {
+  scatter (f in survey_tumors.csvs) {
     call agt { input: infiles = f }
    }
   call agg { input: inrds = agt.rdsbytum }
   output {
-   Array[Array[File]] allout = tumors.csvs
+   Array[Array[File]] allout = survey_tumors.csvs
   }
 }

@@ -2,7 +2,7 @@
 # defines task to perform on subordinate scatter
 # (included in scatter over genes)
 
-workflow tumors {
+workflow survey_tumors {
   Array[String] tumors
   String gene
   scatter (t in tumors) {
