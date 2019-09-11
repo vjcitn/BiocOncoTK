@@ -1,8 +1,8 @@
-# survey_genes_within_tumor.wdl
+# report_patients_by_txg
 # defines task to perform on subordinate scatter
 # (included in scatter over genes)
 
-workflow survey_tumors {
+workflow report_patients_by_txg {
   Array[String] tumors
   String gene
   scatter (t in tumors) {

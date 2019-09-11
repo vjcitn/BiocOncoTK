@@ -1,10 +1,10 @@
-import "https://raw.githubusercontent.com/vjcitn/BiocOncoTK/master/inst/scripts/msireg/survey_genes_within_tumor.wdl" as sub
+import "https://raw.githubusercontent.com/vjcitn/BiocOncoTK/master/inst/scripts/msireg/report_patients_by_txg.wdl" as sub
 
 # survey_tcga_tumors.wdl
 # this is an approach to programming nested scatter operations with cromwell
 # 
 
-task agt {
+task collect_over_tumors {
   Array[File] infiles
   File aggscr = "gs://vjc_scripts/rbind_csvs_to_RDS.R"
   command {
@@ -22,7 +22,7 @@ task agt {
     }   
  }
 
-task agg {
+task collect_over_genes {
   Array[File] inrds
   File concscr = "gs://vjc_scripts/rbind_RDS_to_RDS.R"
   command {
@@ -40,19 +40,19 @@ task agg {
     }   
 }
 
-workflow survey_genes {
+workflow survey_tumors_within_genes {
   Array[String] genes # gets binding from 'inputs' json
   Array[String] tumors 
   scatter (g in genes) {
-   call sub.survey_tumors {
+   call sub.report_patients_by_txg {
     input: gene = g, tumors=tumors
     }
   }
-  scatter (f in survey_tumors.csvs) {
-    call agt { input: infiles = f }
+  scatter (f in report_patients_by_txg.csvs) {
+    call collect_over_tumors { input: infiles = f }
    }
-  call agg { input: inrds = agt.rdsbytum }
+  call collect_over_genes { input: inrds = collect_over_tumors.rdsbytum }
   output {
-   Array[Array[File]] allout = survey_tumors.csvs
+   Array[Array[File]] allout = report_patients_by_txg.csvs
   }
 }
