@@ -1,10 +1,10 @@
+version 1.0
+
 import "https://raw.githubusercontent.com/vjcitn/BiocOncoTK/master/inst/scripts/msireg/report_patients_by_txg.wdl" as sub
 
 # survey_tcga_tumors.wdl
 # this is an approach to programming nested scatter operations with cromwell
 # 
-
-version 1.0
 
 task collect_over_tumors {
   Array[File] infiles
