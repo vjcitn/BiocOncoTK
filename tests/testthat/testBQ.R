@@ -22,9 +22,9 @@ rownames(bqmat) = bqdf[,1]
 list(bqm=bqmat[rownames(semat), colnames(semat)], sem=semat)
 }
 
-context("buildPancanSE compared to dbGetQuery")
-test_that("meth450k data concordant between SE and BQ", {
-dd = doit()
-expect_true(all.equal(dd$bqm, dd$sem))
-})
+#context("buildPancanSE compared to dbGetQuery")
+#test_that("meth450k data concordant between SE and BQ", {
+#dd = doit()
+#expect_true(all.equal(dd$bqm, dd$sem))
+#})
 
