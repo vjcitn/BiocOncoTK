@@ -53,6 +53,6 @@ workflow genes {
    }
   call agg { input: inrds = agt.rdsbytum }
   output {
-   Array[Array[File]] allout = outs
+   Array[Array[File]] allout = tumors.csvs
   }
 }
