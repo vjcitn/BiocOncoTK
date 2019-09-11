@@ -1,4 +1,4 @@
-import "https://raw.githubusercontent.com/vjcitn/msiboxes/master/simp4.wdl" as sub
+import "https://raw.githubusercontent.com/vjcitn/BiocOncoTK/master/inst/scripts/msireg/survey_genes_within_tumor.wdl" as sub
 
 # survey_tcga_tumors.wdl
 # this is an approach to programming nested scatter operations with cromwell
@@ -53,6 +53,6 @@ workflow genes {
    }
   call agg { input: inrds = agt.rdsbytum }
   output {
-   Array[Array[File]] allout = files_per_tumor
+   Array[Array[File]] allout = tumors.csvs
   }
 }
