@@ -26,7 +26,7 @@ task onetum {
   }
   runtime {
     continueOnReturnCode: true
-    docker: "vjcitn/vjconco:v3"
+    docker: "vjcitn/vjconco:v4"
     disks: "local-disk 40 HDD"
     bootDiskSizeGb: 50
     memory: "24G"
