@@ -32,6 +32,7 @@
   symbol = genesym,
   alias = genesym,
   log2ex = log2(as.numeric(ass)+1),
+  msival = curex$msiTest,
   msicode = ifelse(curex[["msiTest"]] >= 4, ">=4", "<4"))
  write.csv(ans, paste0(tumcode, "_", genesym, ".csv"))
 
