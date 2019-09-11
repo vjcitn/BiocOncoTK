@@ -74,7 +74,7 @@ can use this through the `r Biocpkg("ontoProc")` (devel branch only) and `r CRAN
 packages.  Code for visualizing the location of 'Glioblastoma' in the context of its 'siblings'
 in the ontology follows.
 
-```{r lkgbm,fig=TRUE,message=FALSE}
+```{r lkgbm,message=FALSE}
 library(ontoProc)
 library(ontologyPlot)
 oto = getOncotreeOnto()
@@ -526,7 +526,7 @@ library(pogos)
 ccleNRAS = DRTraceSet(NRAS_AHR[,1], drug="PD-0325901")
 plot(ccleNRAS)
 ```
-```{r dopogmock,echo=FALSE,results="hide",fig=TRUE}
+```{r dopogmock,echo=FALSE,results="hide"}
 ccleNRAS = load_ccleNRAS()
 plot(ccleNRAS)
 ```
