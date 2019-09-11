@@ -48,7 +48,7 @@ workflow genes {
     input: gene = g, tumors=tumors
     }
   }
-  scatter (f in files_per_tumor {
+  scatter (f in files_per_tumor) {
     call agt { input: infiles = f }
    }
   call agg { input: inrds = agt.rdsbytum }
