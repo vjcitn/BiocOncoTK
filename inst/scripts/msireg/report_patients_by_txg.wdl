@@ -30,6 +30,7 @@ task onetum {
     disks: "local-disk 40 HDD"
     bootDiskSizeGb: 50
     memory: "24G"
+    maxRetries: 3
     }   
 }
 
