@@ -48,11 +48,11 @@ workflow genes {
     input: gene = g, tumors=tumors
     }
   }
-  scatter (f in files_per_tumor) {
+  scatter (f in tumors.csvs) {
     call agt { input: infiles = f }
    }
   call agg { input: inrds = agt.rdsbytum }
   output {
-   Array[Array[File]] allout = tumors.csvs
+   Array[Array[File]] allout = outs
   }
 }
