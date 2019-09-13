@@ -24,6 +24,12 @@
  wh = grep(tumcode, nn) 
  stopifnot(length(wh)==1)
  curse = MultiAssayExperiment::experiments(mae)[[wh]]
+ curse_barcodes = colnames(curse)
+ samptypes = substr(curse_barcodes,14,15)
+ keep = which(samptypes %in% c("01", "02", "03", "04", "05", "06", "07",
+       "08", "09", "40"))
+ if (length(keep)==0) stop("no tumor data available using barcode segment 14:15")
+ curse = curse[,keep]
  colnames(curse) = substr(colnames(curse),1,12)
  curex = BiocOncoTK::bindMSI(curse)
  ass = SummarizedExperiment::assay(curex[as.character(genesym),])

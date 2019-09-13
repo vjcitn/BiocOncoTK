@@ -9,7 +9,7 @@ test_that("exprByMSI_csv produces expected CSV", {
  expect_true(file.exists("BLCA_CD8A.csv"))
  rd = read.csv("BLCA_CD8A.csv")
  expect_true(nrow(rd)==408)
- expect_true(ncol(rd)==7)
+ expect_true(ncol(rd)==8)
 })
 
 test_that("rbind utilities work", {

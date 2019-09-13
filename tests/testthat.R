@@ -4,4 +4,4 @@ library(BiocOncoTK)
 library(restfulSE)
 library(reshape2)
 
-#test_check("BiocOncoTK")
+test_check("BiocOncoTK")

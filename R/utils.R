@@ -44,7 +44,15 @@ load_nrasdf = function() {
 #' in \code{colData(se)}, it is replaced and samples are filtered
 #' as described, and a message is given.  If none of the
 #' samples in \code{se} have rows in \code{\link{fireMSI}},
-#' an error is thrown.
+#' an error is thrown.  *OF NOTE:* The MSIsensor data from
+#' Ding's cell paper (see help(dingMSI) for URL) provides the
+#' participant barcode.  The participant barcode is a substring of
+#' the sample barcode.  Be sure to filter the input SummarizedExperiment
+#' to include only tumor samples, using the substr(colnames(se),14,15)
+#' (values "10"..."14" correspond to normal, non-tumor samples.)
+#' Additionally, bindMSI will only work if the colnames of the (filtered)
+#' SummarizedExperiment have been truncated to the participant barcode,
+#' that is, the first 12 characters of the sample barcode.
 #' @examples
 #' bindMSI
 #' @export

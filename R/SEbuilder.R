@@ -1,3 +1,4 @@
+#' @import GenomicFeatures
 #' @import magrittr 
 #' @export
 magrittr::`%>%`
