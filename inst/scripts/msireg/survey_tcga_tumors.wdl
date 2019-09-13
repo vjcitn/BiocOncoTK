@@ -19,6 +19,7 @@ task collect_over_tumors {
     disks: "local-disk 40 HDD"
     bootDiskSizeGb: 50
     memory: "24G"
+    maxRetries: 3
     }   
  }
 
@@ -37,6 +38,7 @@ task collect_over_genes {
     disks: "local-disk 40 HDD"
     bootDiskSizeGb: 50
     memory: "24G"
+    maxRetries: 3
     }   
 }
 
