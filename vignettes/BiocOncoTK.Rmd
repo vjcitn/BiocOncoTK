@@ -683,9 +683,11 @@ sponsored by John Readey.  These data will persist in this format for some time;
 Bioconductor-sponsored representation will be introduced as soon as possible.
 
 ```{r lkdar}
-darmSE = BiocOncoTK::darmGBMcls  # count_lstpm from CONQUER
-darmSE
-assay(darmSE)  # out of memory
+if (httr::HEAD("hsdshdflab.hdfgroup.org")$status_code != 405) {
+ darmSE = BiocOncoTK::darmGBMcls  # count_lstpm from CONQUER
+ darmSE
+ assay(darmSE)  # out of memory
+}
 ```
 
 # Summary
