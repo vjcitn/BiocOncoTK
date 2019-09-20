@@ -127,3 +127,11 @@
 #' @examples
 #' str(BiocOncoTK::dingMSI)
 "dingMSI"
+
+#' filtered MSI data for demonstrating exploratory app
+#' @docType data
+#' @format DataFrame
+#' @source MSI values from dingMSI, expression from curatedTCGAData for three genes, two tumors
+#' @examples
+#' head(BiocOncoTK::small_msi)
+"small_msi"
