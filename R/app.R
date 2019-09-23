@@ -57,6 +57,7 @@ print(nd)
 #' @importFrom dplyr filter
 #' @import magrittr
 #' @importFrom ggpubr ggarrange 
+#' @importFrom car avPlots
 #' @param tum a TCGA tumor code
 #' @param gene a gene symbol used in the indata data.frame
 #' @param intrans an instance of the trans() transformation method of scales package
@@ -68,8 +69,8 @@ print(nd)
 multiviz = function (tum = "MESO", gene = "TYMS", intrans = log10pl1(p = 1), 
     inmeth = "auto", topmsi = Inf, indata, nvar=6) 
 {
-    require(dplyr)
-    require(magrittr)
+    requireNamespace("dplyr")
+    requireNamespace("magrittr")
     g1 = ggbox(tum, gene, indata=indata)
     g1 = ggplot(indata %>% filter(acronym==tum & gene==gene), aes(x=msival)) + geom_density(bw=.1) + scale_x_continuous(trans=log10pl1())
     g2 = ggscat(tum, gene, intrans = intrans, inmeth = inmeth, 
@@ -89,6 +90,20 @@ ggplot(indata %>% filter(acronym == tumor & symbol == gene & msival <
     topmsi), aes(y = log2ex, x = msival)) + geom_hex() + ggtitle(paste0(titlepref, 
     tumor)) + ylab(gene) + scale_x_continuous(trans = intrans) + 
     geom_smooth(method = inmeth) + xlab("MSIsensor score")
+
+ggscat_av = function (tumor, gene, titlepref = "", intrans = log10pl1(p = 1), 
+    inmeth = "auto", topmsi = Inf, indata)  {
+ dat = indata %>% filter(acronym == tumor & symbol == gene & msival < topmsi)
+ nplates = length(unique(dat$plate))
+ if (nplates==1) return(ggscat(tumor, gene, titlepref, intrans, inmeth, topmsi, indata))
+ m1 = lm(log2ex~log(msival + 1)+factor(plate), data=dat)
+ png(file=tempfile())
+ zz = car::avPlots(m1, terms="log(msival + 1)")  
+ dev.off()
+ md = data.frame(tmsi=zz[[1]][,1],log2exa=zz[[1]][,2])
+ ggplot(md, aes(x=tmsi,y=log2exa)) + geom_hex() + geom_abline(slope=m1$coef[2], intercept=0)
+}
+ 
 
 #multiviz(indata=ex21_t33_wplate, inmeth=MASS::rlm)
 
