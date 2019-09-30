@@ -193,3 +193,18 @@
 #' @examples
 #' head(patient_to_tumor_code)
 "patient_to_tumor_code"
+
+#' list of 151 genes annotated as DNA repair pathway members
+#' @docType data
+#' @format named list
+#' @source \url{https://academic.oup.com/jnci/article/104/9/670/872781#supplementary-data}
+#' @note The zipped PDF was read using pdftools::pdf_text and then
+#' manually organized.  All gene symbols present in curatedTCGAData
+#' RNASeq2GeneNorm rownames.  The list elements are
+#' ATM, BER, FA.HR, MMR, NER, NHEJ, OTHER, TLS, RECQ, and XLR.
+#' These denote, respectively, ataxia-telangiectasia-mutated,
+#' base excision repair, Fanconi anemia/homologous recombination,
+#' mismatch repair, nucleotide excision repair,
+#' non-homologous end joining, other, translesion synthesis,
+#' recQ helicase pathway, and cross-link repair.
+"kang_DNArepair"
