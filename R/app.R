@@ -28,6 +28,8 @@ flexbi = function(tcode, indata, which=c(1,2), nvar=5, shr=.6, ...) {
 #' log10(x+p) transformation for use with scales/ggplot2
 #' @importFrom scales trans_new
 #' @importFrom scales muted
+#' @importFrom grDevices dev.off png
+#' @importFrom stats lm prcomp
 #' @param p value of shift before taking log10
 #' @return an instance of custom trans() for scales package
 #' @export
