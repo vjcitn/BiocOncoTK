@@ -208,3 +208,11 @@
 #' non-homologous end joining, other, translesion synthesis,
 #' recQ helicase pathway, and cross-link repair.
 "kang_DNArepair"
+
+#' a table of 'significant' MSIsensor-score/expression relationships in TCGA
+#' @docType data
+#' @format data.frame
+#' @note provided to demonstrate bipartite graph construction
+#' @examples
+#' head(k23sig)
+"k23sig"

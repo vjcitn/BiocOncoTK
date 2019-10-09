@@ -62,8 +62,10 @@ library(reshape2)
 ddm = melt(dd)
 names(ddm)[2] = "gene"
 names(ddm)[3] = "msi_cds"
+if (.Platform$OS.type != "windows") {
 ggplot(ddm %>% filter(msi_cds>0), aes(x=gene,fill=tumor)) + geom_bar() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+}
 ```
 
 Figure 3a of the paper illustrates variation within and between tumor types
@@ -79,8 +81,10 @@ ss[[1]]$x = 1:nrow(ss[[1]])
 ss[[2]]$x = 1:nrow(ss[[2]])
 ss[[3]]$x = 1:nrow(ss[[3]])
 ssd = do.call(rbind,ss)
+if (.Platform$OS.type != "windows") {
 ggplot(ssd, aes(y=Total_number_MSI_events+1,x=x)) + geom_point() +
    facet_grid(.~tumor, scales="free_x")+ scale_y_log10()
+}
 ```
 
 # [Ding et al. 2018](http://dx.doi.org/10.1038/ncomms15180)
@@ -94,7 +98,9 @@ data(MSIsensor.10k)
 data(patient_to_tumor_code)
 names(MSIsensor.10k)[1] = "patient_barcode"
 mm = merge(MSIsensor.10k, patient_to_tumor_code)
+if (.Platform$OS.type != "windows") {
 ggplot(mm, aes(y=MSIsensor.score+1, x=tumor_code)) + 
   geom_boxplot() + coord_flip() + scale_y_log10()
+}
 ```
 

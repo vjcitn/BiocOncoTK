@@ -80,7 +80,9 @@ library(ontologyPlot)
 oto = getOncotreeOnto()
 glioTag = names(grep("Glioblastoma$", oto$name, value=TRUE))
 st = siblings_TAG(glioTag, oto, justSibs=FALSE)
+if (.Platform$OS.type != "windows") {
 onto_plot(oto, slot(st, "ontoTags"), fontsize=50)
+}
 ```
 
 # Resource interfaces
@@ -528,7 +530,9 @@ plot(ccleNRAS)
 ```
 ```{r dopogmock,echo=FALSE,results="hide"}
 ccleNRAS = load_ccleNRAS()
+if (.Platform$OS.type != "windows") {
 plot(ccleNRAS)
+}
 ```
 
 We'll define a responsiveness method, that takes a function f
