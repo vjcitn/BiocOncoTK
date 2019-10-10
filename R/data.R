@@ -216,3 +216,10 @@
 #' @examples
 #' head(k23sig)
 "k23sig"
+
+#' a manually constructed table mapping TCGA acronyms to NCIT thesaurus tags
+#' @format data.frame
+#' @note Constructed using ontoProc::getOncotreeOnto() result.  See the vignette
+#' on Mapping TCGA tumor codes to NCIT for elaborating the mapping to
+#' aggregate tumors into NCIT organ systems.
+"map_tcga_ncit"

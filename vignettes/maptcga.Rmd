@@ -1,0 +1,81 @@
+---
+title: "Mapping TCGA tumor codes to NCIT"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{"Mapping TCGA tumor codes to NCIT"}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::html_document:
+    highlight: pygments
+    number_sections: yes
+    theme: united
+    toc: yes
+---
+
+# Introduction
+
+The TCGA tumor types cover a collection of anatomical compartments.
+Organizing tumor types into groups of related compartments may
+be fruitful.  We will use the oncotree OBO representation
+from an [NCI thesaurus](https://github.com/NCI-Thesaurus/thesaurus-obo-edition/wiki/Downloads)
+OBO distribution in the Bioc 3.9 version of ontoProc.
+
+# A table
+
+This table was constructed by hand on Oct 10 2019 using materials
+in ontoProc package.
+```{r lkt}
+suppressPackageStartupMessages({
+library(DT)
+library(ontoProc)
+library(magrittr)
+library(dplyr)
+library(BiocOncoTK)
+otree = getOncotreeOnto()
+})
+data("map_tcga_ncit")
+datatable(map_tcga_ncit)
+```
+
+# Formal annotation of anatomic site
+
+## Expeditious mapping
+
+We will drop the CNTL class, and use only the
+first NCIT mapping when two seem to match.
+```{r lkanno}
+controlindex = which(map_tcga_ncit[,1]=="CNTL")
+tcgacodes = map_tcga_ncit[-controlindex,1]
+ncitsites = map_tcga_ncit[-controlindex,3]
+ssi = strsplit(ncitsites, "\\|")
+sites = sapply(ssi, "[", 1)
+simpmap = data.frame(code=tcgacodes, oncotr_site=otree$name[sites], ncit=sites,
+  stringsAsFactors=FALSE)
+simpmap[sample(seq_len(nrow(simpmap)),5),]
+```
+
+We now have a 1-1 mapping from TCGA code to NCIT site.
+These sites can be grouped according to organ system,
+using the knowledge that NCIT:C3263 is the 'neoplasm by site'
+(which really should be 'system')
+category.
+
+```{r findsys}
+poss_sys = otree$children["NCIT:C3263"][[1]] # all possible systems
+allanc = otree$ancestors[simpmap$ncit]
+specific = sapply(allanc, function(x) intersect(x, poss_sys)[1]) # ignore multiplicities
+sys = unlist(otree$name[specific])
+datatable(systab <- cbind(simpmap, sys=sys))
+```
+
+Neither thymoma nor mesothelioma have NCIT organ system mappings per se.
+
+## Aggregation
+
+We now have 12 categories for 33 tumor types.  A code
+pattern for finding the TCGA codes for a given system is:
+```{r lkca}
+systab %>% filter(grepl("Repro", sys))
+```

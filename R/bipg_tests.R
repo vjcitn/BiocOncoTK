@@ -16,7 +16,7 @@
 
 #' configure a bipartite graph relating tumor type to gene, using graphNEL
 #' @import graph
-#' @rawNamespace import("Rgraphviz", except=c("from", "to"))
+#' @rawNamespace import("Rgraphviz", except=c("from", "to", "bezierPoints"))
 #' @param stattab a data.frame with columns 'tumor', 'gene', and 'tstat'
 #' @param genes_adverse a vector of genes whose increased expression is 
 #' regarded as adverse
