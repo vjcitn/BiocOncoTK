@@ -2,7 +2,7 @@ Package: BiocOncoTK
 Title: Bioconductor components for general cancer genomics
 Description: Provide a central interface to various tools for
 	genome-scale analysis of cancer studies.  
-Version: 1.6.0
+Version: 1.7.0
 Author: Vince Carey
 Suggests: knitr, dbplyr, org.Hs.eg.db, MultiAssayExperiment,
 	BiocStyle, ontoProc, ontologyPlot, pogos,
