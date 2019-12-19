@@ -4,8 +4,12 @@
 \alias{mc3toGR}
 \title{create a GRanges from the MC3 mutation data}
 \usage{
-mc3toGR(bq, basicfilt = function(data) dplyr::filter(data, Consequence ==
-  "non_coding_transcript_exon_variant"), maxnrec = 1e+05)
+mc3toGR(
+  bq,
+  basicfilt = function(data) dplyr::filter(data, Consequence ==
+    "non_coding_transcript_exon_variant"),
+  maxnrec = 1e+05
+)
 }
 \arguments{
 \item{bq}{bigrquery BigQueryConnection instance}

@@ -3,6 +3,7 @@
 export("%>%")
 export(TcgaMutCounts)
 export(TcgaNIndWithAnyMut)
+export(add_sym)
 export(bindMSI)
 export(bipg_tests)
 export(buildPancanSE)

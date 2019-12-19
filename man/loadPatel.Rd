@@ -4,9 +4,10 @@
 \alias{loadPatel}
 \title{use BiocFileCache discipline to acquire patelGBMSC SummarizedExperiment}
 \usage{
-
-  loadPatel(remotePath = "https://s3.us-east-2.amazonaws.com/biocfound-scrna/patelGBMSC.rds",
-  cache = BiocFileCache::BiocFileCache())
+loadPatel(
+  remotePath = "https://s3.us-east-2.amazonaws.com/biocfound-scrna/patelGBMSC.rds",
+  cache = BiocFileCache::BiocFileCache()
+)
 }
 \arguments{
 \item{remotePath}{character(1) identifying remote RDS}

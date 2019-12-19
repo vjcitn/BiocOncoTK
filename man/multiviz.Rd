@@ -4,8 +4,15 @@
 \alias{multiviz}
 \title{visualize aspects of MSIsensor/expression relationships}
 \usage{
-multiviz(tum = "MESO", gene = "TYMS", intrans = log10pl1(p = 1),
-  inmeth = "auto", topmsi = Inf, indata, nvar = 6)
+multiviz(
+  tum = "MESO",
+  gene = "TYMS",
+  intrans = log10pl1(p = 1),
+  inmeth = "auto",
+  topmsi = Inf,
+  indata,
+  nvar = 6
+)
 }
 \arguments{
 \item{tum}{a TCGA tumor code}

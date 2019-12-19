@@ -4,8 +4,13 @@
 \alias{bipg_tests}
 \title{configure a bipartite graph relating tumor type to gene, using graphNEL}
 \usage{
-bipg_tests(stattab, genes_adverse = NA, genes_favorable = NA,
-  gpar_cex = 0.65, gpar_lwd = 0)
+bipg_tests(
+  stattab,
+  genes_adverse = NA,
+  genes_favorable = NA,
+  gpar_cex = 0.65,
+  gpar_lwd = 0
+)
 }
 \arguments{
 \item{stattab}{a data.frame with columns 'tumor', 'gene', and 'tstat'}

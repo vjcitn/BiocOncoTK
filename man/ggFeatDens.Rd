@@ -4,10 +4,18 @@
 \alias{ggFeatDens}
 \title{create ggplot for density of starts of a GRanges in an interval}
 \usage{
-ggFeatDens(gr, mcolvbl, chrname = "chr15", start = 20450000,
-  end = 20730000, binwidth.in = 5000, basicfilt = function(data)
-  dplyr::filter(data, Consequence == "non_coding_transcript_exon_variant"),
-  ylab.in = "feature\\ndensity", slstyle = "UCSC")
+ggFeatDens(
+  gr,
+  mcolvbl,
+  chrname = "chr15",
+  start = 20450000,
+  end = 20730000,
+  binwidth.in = 5000,
+  basicfilt = function(data) dplyr::filter(data, Consequence ==
+    "non_coding_transcript_exon_variant"),
+  ylab.in = "feature\\ndensity",
+  slstyle = "UCSC"
+)
 }
 \arguments{
 \item{gr}{GRanges instance of interest}

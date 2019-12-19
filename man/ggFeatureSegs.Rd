@@ -4,9 +4,14 @@
 \alias{ggFeatureSegs}
 \title{generate a ggplot of segments of gene-like regions}
 \usage{
-ggFeatureSegs(chrname = "chr15", start = 20450000, end = 20730000,
-  db = EnsDb.Hsapiens.v75::EnsDb.Hsapiens.v75, slstyle = "UCSC",
-  ylab.in = "ensembl\\nnoncoding")
+ggFeatureSegs(
+  chrname = "chr15",
+  start = 20450000,
+  end = 20730000,
+  db = EnsDb.Hsapiens.v75::EnsDb.Hsapiens.v75,
+  slstyle = "UCSC",
+  ylab.in = "ensembl\\nnoncoding"
+)
 }
 \arguments{
 \item{chrname}{character(1) chromosome tag}

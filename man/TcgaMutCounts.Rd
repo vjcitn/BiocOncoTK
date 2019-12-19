@@ -4,8 +4,7 @@
 \alias{TcgaMutCounts}
 \title{obtain data frame with counts of mutation per gene symbol for selected tumor type}
 \usage{
-TcgaMutCounts(tumor, limit = NULL, db = "isb-cgc:tcga_201607_beta",
-  project)
+TcgaMutCounts(tumor, limit = NULL, db = "isb-cgc:tcga_201607_beta", project)
 }
 \arguments{
 \item{tumor}{character(1) defaults to 'BRCA'}

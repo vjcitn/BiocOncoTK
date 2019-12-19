@@ -4,8 +4,11 @@
 \alias{get_plates}
 \title{use curatedTCGAData request to acquire plate codes for samples}
 \usage{
-get_plates(tumcode = "BLCA", assay = "RNASeq2GeneNorm",
-  samptypes = c("01", "02", "03", "04", "06", "09", "40"))
+get_plates(
+  tumcode = "BLCA",
+  assay = "RNASeq2GeneNorm",
+  samptypes = c("01", "02", "03", "04", "06", "09", "40")
+)
 }
 \arguments{
 \item{tumcode}{a TCGA tumor code, usually 3 or for characters}

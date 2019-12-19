@@ -4,10 +4,18 @@
 \alias{ggMutDens}
 \title{make a ggplot with density traces of mutations per base pair, for 'most mutated' tumor types in a given interval}
 \usage{
-ggMutDens(bq, basicfilt = function(data) dplyr::filter(data, Consequence
-  == "non_coding_transcript_exon_variant"), chrname = "15",
-  start = 20450000, end = 20730000, project_volume = 5,
-  maxnrec = 50000, binwidth = 5000, xlab.in = " ")
+ggMutDens(
+  bq,
+  basicfilt = function(data) dplyr::filter(data, Consequence ==
+    "non_coding_transcript_exon_variant"),
+  chrname = "15",
+  start = 20450000,
+  end = 20730000,
+  project_volume = 5,
+  maxnrec = 50000,
+  binwidth = 5000,
+  xlab.in = " "
+)
 }
 \arguments{
 \item{bq}{bigrquery BigQueryConnection instance}

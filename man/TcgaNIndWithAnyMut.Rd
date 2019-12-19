@@ -4,8 +4,12 @@
 \alias{TcgaNIndWithAnyMut}
 \title{Give count of individuals with a mutation recorded for selected tumor}
 \usage{
-TcgaNIndWithAnyMut(tumor = "BRCA", limit = NULL,
-  db = "isb-cgc:tcga_201607_beta", project)
+TcgaNIndWithAnyMut(
+  tumor = "BRCA",
+  limit = NULL,
+  db = "isb-cgc:tcga_201607_beta",
+  project
+)
 }
 \arguments{
 \item{tumor}{character(1) defaults to 'BRCA'}

@@ -4,10 +4,16 @@
 \alias{buildPancanSE}
 \title{helper for SummarizedExperiment construction from pancan}
 \usage{
-buildPancanSE(bq, acronym = "BLCA", assay = "meth450k",
-  sampType = "TP", subjectIDName = "ParticipantBarcode",
-  seTransform = force, bindMethRowranges = TRUE,
-  featIDMap = featIDMapper())
+buildPancanSE(
+  bq,
+  acronym = "BLCA",
+  assay = "meth450k",
+  sampType = "TP",
+  subjectIDName = "ParticipantBarcode",
+  seTransform = force,
+  bindMethRowranges = TRUE,
+  featIDMap = featIDMapper()
+)
 }
 \arguments{
 \item{bq}{instance of BigQueryConnection for pancancer-atlas.Annotated Dataset}

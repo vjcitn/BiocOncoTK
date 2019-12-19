@@ -14,7 +14,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{filter}}, \code{\link[dplyr]{tbl}}, \code{\link[dplyr]{select}}}
+  \item{dplyr}{\code{\link[dplyr]{filter}}, \code{\link[dplyr]{select}}, \code{\link[dplyr]{tbl}}}
 
   \item{magrittr}{\code{\link[magrittr]{\%>\%}}}
 }}

@@ -4,8 +4,7 @@
 \alias{pancan_BQ}
 \title{provide bigrquery connection to pancancer Annotated datasets}
 \usage{
-pancan_BQ(dataset = "Annotated", billing = Sys.getenv("CGC_BILLING"),
-  ...)
+pancan_BQ(dataset = "Annotated", billing = Sys.getenv("CGC_BILLING"), ...)
 }
 \arguments{
 \item{dataset}{character(1) dataset name}
