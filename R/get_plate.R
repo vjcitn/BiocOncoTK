@@ -16,7 +16,9 @@
 #' @export
 get_plates = function(tumcode="BLCA", assay="RNASeq2GeneNorm",
   samptypes=c("01", "02", "03", "04", "06", "09", "40")) {
- mae = curatedTCGAData::curatedTCGAData(tumcode, assay, dry.run=FALSE)
+ mae = curatedTCGAData::curatedTCGAData(
+    tumcode, assay, version = "1.1.38", dry.run=FALSE
+ )
  el = MultiAssayExperiment::experiments(mae)
  stopifnot(length(el)==1)
  curse = MultiAssayExperiment::experiments(mae)[[1]]
