@@ -19,7 +19,9 @@
  library(ExperimentHub)
  eca = getExperimentHubOption("CACHE")
  if (!dir.exists(eca)) try(dir.create(getExperimentHubOption("CACHE")))
- mae = curatedTCGAData::curatedTCGAData(tumcode, "RNASeq2GeneNorm", dry.run=FALSE)
+ mae = curatedTCGAData::curatedTCGAData(
+    tumcode, "RNASeq2GeneNorm", version = "1.1.38", dry.run=FALSE
+ )
  nn = names(MultiAssayExperiment::experiments(mae))
  wh = grep(tumcode, nn) 
  stopifnot(length(wh)==1)
