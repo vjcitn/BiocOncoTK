@@ -4,7 +4,9 @@
 \name{k23sig}
 \alias{k23sig}
 \title{a table of 'significant' MSIsensor-score/expression relationships in TCGA}
-\format{data.frame}
+\format{
+data.frame
+}
 \usage{
 k23sig
 }

@@ -4,7 +4,9 @@
 \name{molpo_WGS}
 \alias{molpo_WGS}
 \title{representation of events detected in 708 WGS experiments TCGA from Cortes-Ciriano et al. 2017}
-\format{SummarizedExperiment}
+\format{
+SummarizedExperiment
+}
 \source{
 \url{https://www.nature.com/articles/ncomms15180#Sec22}
 }

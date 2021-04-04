@@ -4,7 +4,9 @@
 \name{molpo_5utr}
 \alias{molpo_5utr}
 \title{representation of 5'UTR MSI events in TCGA from Cortes-Ciriano et al. 2017}
-\format{SummarizedExperiment}
+\format{
+SummarizedExperiment
+}
 \source{
 \url{https://www.nature.com/articles/ncomms15180#Sec22}
 }

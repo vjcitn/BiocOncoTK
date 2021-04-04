@@ -4,7 +4,9 @@
 \name{map_tcga_ncit}
 \alias{map_tcga_ncit}
 \title{a manually constructed table mapping TCGA acronyms to NCIT thesaurus tags}
-\format{data.frame}
+\format{
+data.frame
+}
 \usage{
 map_tcga_ncit
 }

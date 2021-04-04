@@ -4,7 +4,9 @@
 \name{darmGBMcls}
 \alias{darmGBMcls}
 \title{Data in count_lstpm format from Darmanis 2017 (PMC 5810554) single cell RNA-seq in GBM}
-\format{SummarizedExperiment with HDF Object store back end}
+\format{
+SummarizedExperiment with HDF Object store back end
+}
 \source{
 http://imlspenticton.uzh.ch/robinson_lab/conquer/data-mae/GSE84465.rds
 }

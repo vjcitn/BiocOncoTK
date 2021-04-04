@@ -4,7 +4,9 @@
 \name{brcaMAE}
 \alias{brcaMAE}
 \title{a virtual MultiAssayExperiment for pancancer-atlas BRCA data}
-\format{MultiAssayExperiment instance with DelayedArray (BQ3_Array) assay data}
+\format{
+MultiAssayExperiment instance with DelayedArray (BQ3_Array) assay data
+}
 \source{
 ISB BigQuery pancan-atlas project
 }

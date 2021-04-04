@@ -4,7 +4,9 @@
 \name{dingMSI}
 \alias{dingMSI}
 \title{microsatellite instability data in TCGA, collected from Ding et al. Cell 173(2) 2018.}
-\format{DataFrame}
+\format{
+DataFrame
+}
 \source{
 \url{https://www.cell.com/cms/10.1016/j.cell.2018.03.033/attachment/0ac495ba-3578-41cf-8fb1-94487f554bb5/mmc5.xlsx} retrieved 9/17/2018.
 }

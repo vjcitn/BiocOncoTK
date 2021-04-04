@@ -4,7 +4,9 @@
 \name{CCLE_DRUG_BROAD}
 \alias{CCLE_DRUG_BROAD}
 \title{CCLE_DRUG_BROAD: serialization of legacy CCLE 'Drug data' from Broad Institute}
-\format{S4Vectors DataFrame instance}
+\format{
+S4Vectors DataFrame instance
+}
 \source{
 \url{"https://data.broadinstitute.org/ccle_legacy_data/pharmacological_profiling/CCLE_NP24.2009_Drug_data_2015.02.24.csv"}
 }

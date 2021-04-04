@@ -4,7 +4,9 @@
 \name{small_msi}
 \alias{small_msi}
 \title{filtered MSI data for demonstrating exploratory app}
-\format{DataFrame}
+\format{
+DataFrame
+}
 \source{
 MSI values from dingMSI, expression from curatedTCGAData for three genes, two tumors
 }

@@ -4,7 +4,9 @@
 \name{patient_to_tumor_code}
 \alias{patient_to_tumor_code}
 \title{data.frame mapping from TCGA patient_barcode to TCGA tumor code}
-\format{data.frame}
+\format{
+data.frame
+}
 \source{
 \url{https://portal.gdc.cancer.gov/exploration?uploadCaseTab=matched}
 }

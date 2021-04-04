@@ -4,7 +4,9 @@
 \name{molpo_CDS}
 \alias{molpo_CDS}
 \title{representation of MSI events in coding regions TCGA from Cortes-Ciriano et al. 2017}
-\format{SummarizedExperiment}
+\format{
+SummarizedExperiment
+}
 \source{
 \url{https://www.nature.com/articles/ncomms15180#Sec22}
 }

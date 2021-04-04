@@ -4,7 +4,9 @@
 \name{pert_70138}
 \alias{pert_70138}
 \title{pert_70138: a table with perturbagen information from LINCS}
-\format{data.frame}
+\format{
+data.frame
+}
 \source{
 GEO GSE70138 GSE70138_Broad_LINCS_pert_info.txt.gz
 }

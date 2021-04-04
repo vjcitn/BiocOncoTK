@@ -4,7 +4,9 @@
 \name{pancan.clin.varnames}
 \alias{pancan.clin.varnames}
 \title{pancan.clin.varnames: a data.frame with a list of variable names for clinical patient data}
-\format{data.frame}
+\format{
+data.frame
+}
 \source{
 pancancer-atlas in BigQuery
 }

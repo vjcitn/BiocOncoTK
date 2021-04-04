@@ -4,7 +4,9 @@
 \name{kang_DNArepair}
 \alias{kang_DNArepair}
 \title{list of 151 genes annotated as DNA repair pathway members}
-\format{named list}
+\format{
+named list
+}
 \source{
 \url{https://academic.oup.com/jnci/article/104/9/670/872781#supplementary-data}
 }

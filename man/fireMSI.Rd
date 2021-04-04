@@ -4,7 +4,9 @@
 \name{fireMSI}
 \alias{fireMSI}
 \title{microsatellite instability data in TCGA, collected from curatedTCGAData}
-\format{DataFrame}
+\format{
+DataFrame
+}
 \source{
 firehose via curatedTCGAData; see metadata(BiocOncoTK::fireMSI)
 }

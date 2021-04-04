@@ -4,7 +4,9 @@
 \name{annotTabs}
 \alias{annotTabs}
 \title{table names in Annotated pancancer data release}
-\format{character vector}
+\format{
+character vector
+}
 \source{
 pancancer-atlas in BigQuery
 }

@@ -4,7 +4,9 @@
 \name{icd10_c}
 \alias{icd10_c}
 \title{helper for interpreting ICD-10 codes}
-\format{data.frame}
+\format{
+data.frame
+}
 \source{
 ICD-10
 }

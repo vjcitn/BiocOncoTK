@@ -4,7 +4,9 @@
 \name{pancan_sampTypeMap}
 \alias{pancan_sampTypeMap}
 \title{helper for interpreting pancan-atlas sample type codes}
-\format{data.frame}
+\format{
+data.frame
+}
 \source{
 ISB BigQuery pancan-atlas project
 }

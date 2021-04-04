@@ -4,7 +4,9 @@
 \name{cell_70138}
 \alias{cell_70138}
 \title{cell_70138: a table with cell-line information from LINCS}
-\format{data.frame}
+\format{
+data.frame
+}
 \source{
 GEO GSE70138 GSE70138_Broad_LINCS_cell_info_2017-04-28.txt.gz
 }
