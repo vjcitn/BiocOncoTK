@@ -87,7 +87,7 @@ ggplot(ssd, aes(y=Total_number_MSI_events+1,x=x)) + geom_point() +
 }
 ```
 
-# [Ding et al. 2018](http://dx.doi.org/10.1038/ncomms15180)
+# [Ding et al. 2018](https://doi.org/10.1016/j.cell.2018.03.033)
 
 The MSIsensor scores from the paper of Ding et al. are provided in
 a simple data.frame.  The gestalt of their Figure 3C can
