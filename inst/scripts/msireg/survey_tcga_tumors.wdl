@@ -6,8 +6,8 @@ import "https://raw.githubusercontent.com/vjcitn/BiocOncoTK/master/inst/scripts/
 
 task collect_over_tumors {
   Array[File] infiles
-  File aggscr = ${aggscr}
-  File scr = ${scr}  # needed for sub
+  File aggscr ${aggscr}
+  File scr ${scr}  # needed for sub
   command {
    Rscript ${aggscr} demo.rds ${sep=' ' infiles}
   }
@@ -26,7 +26,7 @@ task collect_over_tumors {
 
 task collect_over_genes {
   Array[File] inrds
-  File concscr = ${concscr}
+  File concscr ${concscr}
   command {
    Rscript ${concscr} final.rds ${sep=' ' inrds}
   }
