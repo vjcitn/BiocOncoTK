@@ -1,0 +1,4 @@
+{
+  "tumors": ["PRAD", "COAD"],
+  "genes": ["SATB1", "CBX7", "FOXM1"]
+}
