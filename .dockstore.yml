@@ -1,0 +1,6 @@
+version: 1.2
+workflows:
+  - subclass: WDL
+    primaryDescriptorPath: inst/scripts/msireg/survey_tcga_tumors.wdl
+    authors:
+      - orcid: 0000-0003-4046-0063
