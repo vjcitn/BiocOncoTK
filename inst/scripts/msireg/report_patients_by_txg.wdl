@@ -17,7 +17,7 @@ workflow report_patients_by_txg {
 task onetum {
   String tum1 
   String g1
-  File scr ${scr}
+  File scr
   command {
     Rscript  ${scr}  --tumor=${tum1} --gene=${g1}
   }
