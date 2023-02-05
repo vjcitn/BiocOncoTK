@@ -15,7 +15,7 @@ task collect_over_tumors {
    }
   runtime {
     continueOnReturnCode: true
-    docker: "vjcitn/vjconco:v4"
+    docker: "vjcitn/vjconco:3.16.0"
     disks: "local-disk 40 HDD"
     bootDiskSizeGb: 50
     memory: "24G"
@@ -34,7 +34,7 @@ task collect_over_genes {
   }
   runtime {
     continueOnReturnCode: true
-    docker: "vjcitn/vjconco:v4"
+    docker: "vjcitn/vjconco:3.16.0"
     disks: "local-disk 40 HDD"
     bootDiskSizeGb: 50
     memory: "24G"
